@@ -10,7 +10,7 @@ First, you need to have Python 3.11 to use this environment
 #### After that, you need to install pipenv with the following command
 
 ```
-pip install dev
+pip install pipenv
 ```
 
 #### Use bash and the following command
