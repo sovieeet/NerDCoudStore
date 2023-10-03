@@ -30,3 +30,22 @@ pip install -r requirements.txt
 ```
 
 ## And you're ready to code!
+
+### How to connect
+
+```
+python manage.py runserver
+```
+
+### Admin url
+
+```
+http://127.0.0.1:8000/admin/
+```
+
+### Credentials (Remove in the release)
+
+```
+user: admin
+pass: admin123
+```
