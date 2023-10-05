@@ -9,6 +9,9 @@ def hola_mundo(request):
 def page2(request):
     return render(request, 'nerdapp/page2.html')
 
+def login(request):
+    return render(request, 'nerdapp/login.html')
+
 #def lista_categorias(request):
 #   categorias = Categoria.objects.all()  # Consultar todos los productos de la base de datos
 #   return render(request, 'lista_categorias.html', {'categorias': categorias})
