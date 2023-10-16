@@ -1,0 +1,11 @@
+
+
+{% block content %}
+  <h2>Panel de control</h2>
+  {% if user.is_authenticated %}
+    <p>Bienvenido, {{ user.username }}.</p>
+    <p>Otras informaciones específicas del panel de control.</p>
+  {% else %}
+    <p>Inicia sesión para acceder al panel de control.</p>
+  {% endif %}
+{% endblock content %}

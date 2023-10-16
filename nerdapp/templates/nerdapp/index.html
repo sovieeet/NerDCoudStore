@@ -23,11 +23,22 @@
                 <!-- Contenedor separado para el botón -->
                 <div class="mt-2">
                     <!-- Botón de Bootstrap -->
-                    <button class="btn btn-primary">Presiona aquí</button>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Login cuma</a>
                 </div>
                 <a href="{% url 'page2' %}" class="btn btn-primary">Presiona aquí para ir a la página 2</a>
             </div>
         </div>
     </div>
+    {% if user.is_authenticated %}
+    <li>
+        <h1>Inicio de sesión correcto</h1>
+    </li>
+    <li>
+        <a href="#">{{ user.username }}</a>
+    </li>
+    {% else %}
+        <h1>Sin inicio de sesión</h1>
+
+    {% endif %}
 </body>
 </html>
