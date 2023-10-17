@@ -7,14 +7,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Iniciar sesión</title>
+    <title>Registrar usuario</title>
 </head>
 <body>
-    <h2>Iniciar sesión</h2>
+    {% load crispy_forms_tags %}
+    <h2>Registro de Usuario</h2>
     <form action="" method="post">
 
         {% csrf_token %}
-        {{ form }}
+        {{ form | crispy }}
 
         <input type="submit" value="Ingresar">
     </form>
