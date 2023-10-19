@@ -1,3 +1,8 @@
+{% extends 'nerdapp/base.html' %}
+
+{% block title %}Index{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -23,11 +28,15 @@
                 <!-- Contenedor separado para el botón -->
                 <div class="mt-2">
                     <!-- Botón de Bootstrap -->
-                    <button class="btn btn-primary">Presiona aquí</button>
+                    <a href="{% url 'login' %}" class="btn btn-primary">Login cuma</a>
                 </div>
                 <a href="{% url 'page2' %}" class="btn btn-primary">Presiona aquí para ir a la página 2</a>
+            </div>
+            </div>
+                <a href="{% url 'signup' %}" class="btn btn-primary">Crear cuenta</a>
             </div>
         </div>
     </div>
 </body>
 </html>
+{% endblock %}

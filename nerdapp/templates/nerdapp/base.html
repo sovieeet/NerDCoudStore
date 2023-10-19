@@ -1,19 +1,59 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-    <title>Login</title> 
-    {% load static %}
-    <!-- Agrega los enlaces a Bootstrap desde un CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link href="{% static 'nerdapp/estilos.css' %} "rel="stylesheet">
-    </head>
-    <body>
-        {% block contenido %} 
-        
-        {% endblock contenido %}
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Título Predeterminado{% endblock %}</title>
+
+    <!-- Agrega el enlace a Bootstrap 5 CSS aquí -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
+    
+    <!-- Agrega aquí tus etiquetas meta, estilos y scripts comunes -->
+</head>
+<body>
+    <header>
+        <!-- Encabezado Bootstrap -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">Mi Sitio</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        </li>
+                        {% if user.is_authenticated %}
+                        <li>
+                            <a href="{% url 'logout' %}">Cerrar sesión</a>
+                        </li>
+                        <li>
+                            <a href="#">@{{ user.username }}</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a href="{% url 'login' %}">Iniciar sesión</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'signup' %}">Registrarte</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mt-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-light text-center py-3">
+        <!-- Aquí coloca tu contenido del pie de página, como información de contacto, enlaces sociales, etc. -->
+        Pie de página &copy; 2023
+    </footer>
+
+    <!-- Agrega el enlace a Bootstrap 5 JavaScript y cualquier otro script necesario aquí -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Agrega aquí tus scripts JavaScript comunes si es necesario -->
+</body>
 </html>

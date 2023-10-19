@@ -1,22 +1,36 @@
-from django.shortcuts import render
-from .models import Categoria  # Asegúrate de importar tu modelo Producto
-
-# Create your views here.
+from django.shortcuts import render, redirect
+from .models import Categoria
+from .forms import CustomUserCreationForm
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 def hola_mundo(request):
     return render(request, 'nerdapp/index.html')
 
+def dashboard(request):
+    return render(request, 'nerdapp/dashboard.html')
+
 def page2(request):
     return render(request, 'nerdapp/page2.html')
 
-def login(request):
-    return render(request, 'nerdapp/login.html')
-
-#def lista_categorias(request):
-#   categorias = Categoria.objects.all()  # Consultar todos los productos de la base de datos
-#   return render(request, 'lista_categorias.html', {'categorias': categorias})
-
 def lista_categorias(request):
     categorias = Categoria.objects.all()
-    print(categorias)  # Muestra las categorías en la consola
+    print(categorias)
     return render(request, 'nerdapp/lista_categorias.html', {'categorias': categorias})
+
+def signup(request):
+    data = {
+        'form': CustomUserCreationForm
+    }
+
+    if request.method == 'POST':
+        formulario = CustomUserCreationForm(data=request.POST)
+        if formulario.is_valid():
+            formulario.save()
+            user = authenticate(username=formulario.cleaned_data['username'], password=formulario.cleaned_data['password1'])
+            login(request, user)
+            messages.success(request,"cuenta creada correctamente")
+            return redirect(to="hola_mundo")
+        data["form"] = formulario
+
+    return render(request, 'registration/signup.html', data)
