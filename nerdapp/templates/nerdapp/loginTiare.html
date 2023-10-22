@@ -1,22 +1,32 @@
-{% extends "nerdapp/base.html" %}
-{% block contenido %}
-    <!-- Contenedor principal utilizando clases de Bootstrap -->
-    <div class="container-login">
-        <div class="column1">
-           <img class="logo-login" src="../../static/nerdapp/img/Logo.png"> 
-           <button type="button" class="btn btn-primary" style="margin-top:15% ;">Crear cuenta</button>
-        </div>
-        <div class="column2">
-            <h1>Iniciar Sesión</h1>
-            <p>Correo</p>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Correo" aria-label="Username" aria-describedby="basic-addon1">
-              </div>
-              
-            <p>Contraseña</p>
-              <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Contraseña" aria-label="Username" aria-describedby="basic-addon1">
-              </div>
-        </div>
-    </div>
+{% extends "nerdapp/base.html" %} {% block contenido %}
+<!-- Contenedor principal utilizando clases de Bootstrap -->
+<div class="container-login">
+	<div class="column1">
+		<button type="button" class="btn btn-primary" style="margin-top: 15%">
+			Crear cuenta
+		</button>
+	</div>
+	<div class="column2">
+		<h1>Iniciar Sesión</h1>
+		<p>Correo</p>
+		<div class="input-group mb-3">
+			<input
+				type="text"
+				class="form-control"
+				placeholder="Correo"
+				aria-label="Username"
+				aria-describedby="basic-addon1" />
+		</div>
+
+		<p>Contraseña</p>
+		<div class="input-group mb-3">
+			<input
+				type="text"
+				class="form-control"
+				placeholder="Contraseña"
+				aria-label="Username"
+				aria-describedby="basic-addon1" />
+		</div>
+	</div>
+</div>
 {% endblock contenido %}

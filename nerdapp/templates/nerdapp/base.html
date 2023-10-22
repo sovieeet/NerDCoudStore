@@ -8,6 +8,8 @@
     <!-- Agrega el enlace a Bootstrap 5 CSS aquí -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
     
+    {% load static %}
+    <link href="{% static 'nerdapp/css/login.css' %} "rel="stylesheet">
     <!-- Agrega aquí tus etiquetas meta, estilos y scripts comunes -->
 </head>
 <body>
@@ -44,7 +46,7 @@
     </header>
 
     <main class="container mt-4">
-        {% block content %}{% endblock %}
+        {% block contenido %}{% endblock contenido %}
     </main>
 
     <footer class="bg-light text-center py-3">
