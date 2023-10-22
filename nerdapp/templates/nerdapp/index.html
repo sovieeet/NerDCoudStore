@@ -17,9 +17,28 @@
                 </div>
                 <a href="{% url 'page2' %}" class="btn btn-primary">Presiona aquí para ir a la página 2</a>
             </div>
-            
         </div>
     </div>
+
+    {% load humanize %}
+    <h2>Productos</h2>
+    <div class="productos">
+        {% for p in productos %}
+        <div class="product_container">
+            {% if p.imagen %}
+            <img src="{{ p.imagen.url }}" alt="img product">
+            {% endif %}
+            <div class="detalle">
+                <h2>{{ p.nombre | title }}</h2>
+                <h3>{{ p.precio | intcomma }}/h3>
+
+            </div>
+        </div>
+
+
+
+    </div>
+    {% endfor %}
 </body>
 </html>
 {% endblock %}

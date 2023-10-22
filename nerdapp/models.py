@@ -19,6 +19,7 @@ class Producto(models.Model):
     id_producto = models.IntegerField(primary_key=True, default=100)
     nombre = models.CharField(max_length=200)
     descripcion = models.CharField(max_length=200)
+    imagen = models.ImageField(upload_to="productos", null=True)
     categoria_id_categoria = models.ForeignKey(Categoria, null=False,  blank=False, on_delete=models.CASCADE)
     inventario_id_inventario = models.ForeignKey(Inventario, null=False,  blank=False, on_delete=models.CASCADE)
     

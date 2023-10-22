@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
-from .models import Categoria
+from .models import Categoria, Producto
 from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
 def index(request):
-    return render(request, 'nerdapp/index.html')
+    productos = Producto.objects.all()
+    data = {
+        'productos': productos
+    }
+
+    return render(request, 'nerdapp/index.html', data)
 
 def dashboard(request):
     return render(request, 'nerdapp/dashboard.html')
