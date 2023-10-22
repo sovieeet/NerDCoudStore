@@ -1,0 +1,37 @@
+{% extends "nerdapp/base.html" %} {% block contenido %}
+<!-- Contenedor principal utilizando clases de Bootstrap -->
+<div class="container">
+	<div class="row justify-content-end">
+		<div class="col-8" style="text-align: start">
+			<div class="row row-cols-3 justify-content-end">
+				<div class="col-5 col-md-3">Buscar Subasta</div>
+				<div class="col-5 col-md-7">
+					<input
+						class="form-control me-2"
+						type="search"
+						placeholder="Buscar"
+						aria-label="Search"
+						style="width: 100%" />
+				</div>
+				<div class="col-2 col-md-2">
+					<button class="btn" type="submit">
+						<i class="bi bi-search" style="color: #545f71"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-4" style="text-align: center">
+			<a
+				role="button"
+				href="{% url 'agregarSubasta' %}"
+				class="btn-crear p-3"
+				style="text-decoration: none"
+				>Agregar</a
+			>
+		</div>
+	</div>
+	<br />
+	<h2 class="text-subtitulo" style="text-align: left">Listado de subastas</h2>
+</div>
+
+{% endblock contenido %}

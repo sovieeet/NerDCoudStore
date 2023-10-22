@@ -1,0 +1,93 @@
+{% extends "nerdapp/base.html" %} {% block contenido %}
+<!-- Contenedor principal utilizando clases de Bootstrap -->
+<div class="container">
+	<div style="text-align: left">
+		<h2 class="text-subtitulo" style="text-align: left">Agrega Producto</h2>
+	</div>
+	<form class="form-singup p-5" style="width: 100%">
+		<div class="row">
+			<!--<div class="col-4">-->
+			<div class="form-group" style="text-align: center">
+				<img
+					id="preview"
+					class="m-auto"
+					src="#"
+					alt="Imagen previa"
+					style="
+						max-width: 200px;
+						max-height: 200px;
+						display: none;
+						border-radius: 10px;
+						border: solid 2px #04668d;
+					" />
+
+				<br />
+				<label for="imagen">Subir Imagen:</label>
+				<input
+					type="file"
+					class="form-control-file"
+					id="imagen"
+					accept="image/*" />
+			</div>
+			<!--</div>
+			<div class="col-8">-->
+			<div class="form-group">
+				<label for="nombreProducto">Nombre Producto:</label>
+				<input
+					type="text"
+					class="form-control"
+					id="nombreProducto"
+					placeholder="Ingrese el nombre del producto" />
+			</div>
+			<div class="form-group">
+				<label for="descripcion">Descripción:</label>
+				<textarea
+					class="form-control"
+					id="descripcion"
+					rows="3"
+					placeholder="Ingrese la descripción del producto"></textarea>
+			</div>
+			<div class="form-group">
+				<label for="precio">Precio:</label>
+				<input
+					type="number"
+					class="form-control"
+					id="precio"
+					placeholder="Ingrese el precio del producto" />
+			</div>
+			<div class="form-group">
+				<label for="categoria">Categoría:</label>
+				<select class="form-control" id="categoria">
+					<option value="categoria1">Categoría 1</option>
+					<option value="categoria2">Categoría 2</option>
+					<!-- Agrega más opciones de categorías según sea necesario -->
+				</select>
+			</div>
+			<div class="form-group">
+				<label for="horaLimite">Hora Límite:</label>
+				<input type="time" class="form-control" id="horaLimite" />
+			</div>
+			<div class="form-group">
+				<label for="fechaLimite">Fecha Límite:</label>
+				<input type="date" class="form-control" id="fechaLimite" />
+			</div>
+			<button type="submit" class="btn-login">Enviar</button>
+			<!--</div>-->
+		</div>
+	</form>
+
+	<br />
+</div>
+{% endblock contenido %} {% block scriptsCode %}
+<script>
+	document.getElementById("imagen").onchange = function (event) {
+		var reader = new FileReader();
+		reader.onload = function () {
+			var preview = document.getElementById("preview");
+			preview.src = reader.result;
+			preview.style.display = "block";
+		};
+		reader.readAsDataURL(event.target.files[0]);
+	};
+</script>
+{% endblock scriptsCode %}

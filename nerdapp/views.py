@@ -34,3 +34,9 @@ def signup(request):
         data["form"] = formulario
 
     return render(request, 'registration/signup.html', data)
+
+def listSubastas(request):
+    return render(request, 'subasta/listSubastas.html')
+
+def agregarSubasta(request):
+    return render(request, 'subasta/agregarSubasta.html')
