@@ -1,24 +1,24 @@
-{% extends 'nerdapp/base.html' %}
-
-{% block title %}Signup{% endblock %}
-
-{% block content %}
+{% extends 'nerdapp/base.html' %} {% block title %}Signup{% endblock title %}
+{%block contenido %}
 
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Registrar usuario</title>
-</head>
-<body>
-    {% load crispy_forms_tags %}
-    <h2>Registro de Usuario</h2>
-    <form action="" method="post">
+	<head>
+		<title>Registrar usuario</title>
+	</head>
+	<body>
+		{% load crispy_forms_tags %}
+		<form action="" method="post" class="form-singup">
+			<h2 class="titulo-singup">Crear Cuenta</h2>
+			<br />
+			<div class="contenedor-form-singup">
+				{% csrf_token %} {{ form | crispy }}
 
-        {% csrf_token %}
-        {{ form | crispy }}
-
-        <input type="submit" value="Ingresar">
-    </form>
-</body>
+				<div class="contenedor-btn-crear">
+					<input type="submit" class="btn-crear" value="Guardar" />
+				</div>
+			</div>
+		</form>
+	</body>
 </html>
 {% endblock %}

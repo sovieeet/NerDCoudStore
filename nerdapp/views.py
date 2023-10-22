@@ -4,7 +4,7 @@ from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
-def hola_mundo(request):
+def index(request):
     return render(request, 'nerdapp/index.html')
 
 def dashboard(request):

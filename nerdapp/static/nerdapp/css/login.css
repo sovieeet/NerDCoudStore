@@ -29,7 +29,6 @@
     letter-spacing: -0.48px;
     width: 144px;
     height: 41px;
-    margin-top: 15%;
 }
 @media  (min-width: 769px) {
     .container-login{
@@ -59,6 +58,7 @@
     }
     .logo-login{
         width: 100%;
+        padding: 10%;
     }
     .form-login{
         margin: auto;
