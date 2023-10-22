@@ -30,7 +30,7 @@ def signup(request):
             user = authenticate(username=formulario.cleaned_data['username'], password=formulario.cleaned_data['password1'])
             login(request, user)
             messages.success(request,"cuenta creada correctamente")
-            return redirect(to="hola_mundo")
+            return redirect(to="index")
         data["form"] = formulario
 
     return render(request, 'registration/signup.html', data)
