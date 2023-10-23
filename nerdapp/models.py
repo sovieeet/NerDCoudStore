@@ -63,9 +63,9 @@ class Subasta(models.Model):
     descripcion = models.CharField(max_length=200)
     precio_inicial = models.IntegerField()
     precio_mas_alto = models.IntegerField()
-    fecha_inicio = models.DateField()
+    fecha_inicio = models.DateTimeField(auto_now_add=True)
     fecha_termino = models.DateField()
-    hora_inicio = models.TimeField()
+    hora_inicio = models.TimeField(auto_now_add=True)
     hora_termino = models.TimeField()
 
     def __str__(self):
@@ -100,6 +100,7 @@ class Publicacion(models.Model):
 
 class Foto(models.Model):
     id_foto = models.IntegerField(primary_key=True)
-    foto = models.CharField(max_length=200)
+    #foto = models.CharField(max_length=200)
+    foto = models.ImageField(upload_to='fotos/')  # 'fotos/' es la carpeta donde se guardarán las imágenes
     subasta_id_subasta = models.ForeignKey(Subasta, null=False, blank=False, on_delete=models.CASCADE)
     producto_id_producto = models.ForeignKey(Producto, null=False, blank=False, on_delete=models.CASCADE)
