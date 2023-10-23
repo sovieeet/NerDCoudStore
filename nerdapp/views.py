@@ -4,6 +4,7 @@ from .forms import CustomUserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
+
 def index(request):
     productos = Producto.objects.all()
     data = {

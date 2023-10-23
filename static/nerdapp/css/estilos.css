@@ -1,0 +1,24 @@
+.text-subtitulo{
+    color: black;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 48px;
+    letter-spacing: -0.96px;
+}
+
+.productos {
+    text-align: center; /* Alineación centrada para los contenedores */
+}
+
+.product_container {
+    display: inline-block;
+    width: 200px; /* Ancho máximo para cada producto */
+    margin: 10px; /* Espacio entre productos */
+    text-align: left; /* Alineación izquierda para el contenido del producto */
+    vertical-align: top; /* Alineación superior para evitar desplazamiento vertical */
+}
+
+.product-image {
+    max-width: 200px; /* Asegura que las imágenes tengan un ancho máximo de 200px */
+}
