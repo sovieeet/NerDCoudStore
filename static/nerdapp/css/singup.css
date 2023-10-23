@@ -1,0 +1,27 @@
+
+.contenedor-btn-crear{
+text-align: center;
+padding: 20px;
+}
+.form-singup{
+    margin: auto;
+    width: 80%;
+    border-radius: 10px;
+    background-color: #D9D9D9;
+}
+.titulo-singup{
+    text-align: start;
+    padding-top: 5%;
+    padding-left: 5%;
+    color: #000;
+    font-family: KoHo;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 22px;
+    letter-spacing: -0.48px;
+}
+.contenedor-form-singup{
+    width: 80%;
+    margin: auto;
+}

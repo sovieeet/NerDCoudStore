@@ -1,23 +1,48 @@
+{% extends 'nerdapp/base.html' %}
 
-{% extends 'nerdapp/base.html' %} {% block title %}Index{% endblock title %}
-{%block contenido %}
+{% block title %}Index{% endblock title %}
+
+{% block contenido %}
+
+{% load humanize %}
+
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'estilos.css' %}">
+</head>
 <body>
-    <!-- Contenedor principal utilizando clases de Bootstrap -->
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center">
-                <!-- Encabezado con estilo Bootstrap -->
                 <h1 class="display-4">Nerdcoud Store base</h1>
-                <!-- Párrafo con fondo rojo y texto blanco, ajustado al texto y redondeado -->
                 <p class="bg-danger text-white p-2 m-0 rounded d-inline-block">Esta es la prueba de Bootstrap</p>
-                <!-- Contenedor separado para el botón -->
                 <div class="mt-2">
-                    <!-- Botón de Bootstrap -->
                     <a href="{% url 'login' %}" class="btn btn-primary">Login cuma</a>
                 </div>
                 <a href="{% url 'page2' %}" class="btn btn-primary">Presiona aquí para ir a la página 2</a>
             </div>
-            
+        </div>
+    </div>
+
+    <div class="productos-container">
+        <h2 class="product-heading">Productos</h2>
+        <div class="productos-list">
+            {% for p in productos %}
+            <div class="product-item">
+                <div class="product-image">
+                    {% if p.imagen %}
+                    <img src="{{ p.imagen.url }}" alt="img product">
+                    {% endif %}
+                </div>
+                <div class="product-details">
+                    <h3 class="product-title">{{ p.nombre | title }}</h3>
+                    <p class="product-price">${{ p.precio |intcomma }}</p>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </body>
