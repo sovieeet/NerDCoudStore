@@ -60,6 +60,7 @@ class Subasta(models.Model):
     fecha_termino = models.DateField()
     hora_inicio = models.TimeField(auto_now_add=True)
     hora_termino = models.TimeField()
+    imagen = models.ImageField(upload_to="subastas", null=True)
 
     def __str__(self):
         return self.nombre
@@ -71,6 +72,9 @@ class Comentario(models.Model):
     estado_comentario = models.CharField(max_length=200)
     usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.comentario
+
 class Carrito(models.Model):
     id_carrito = models.IntegerField(primary_key=True)
     fecha_compra = models.DateField()
@@ -78,10 +82,16 @@ class Carrito(models.Model):
     iva = models.IntegerField()
     usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.id_carrito
+
 class Usuario_subasta(models.Model):
     id_usuario_subasta = models.IntegerField(primary_key=True)
     usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
     subasta_id_subasta = models.ForeignKey(Subasta, null=False, blank=False, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.id_usuario_subasta
 
 class Publicacion(models.Model):
     id_publicacion = models.IntegerField(primary_key=True)
@@ -91,9 +101,5 @@ class Publicacion(models.Model):
     estado_publicacion = models.CharField(max_length=200)
     usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
 
-class Foto(models.Model):
-    id_foto = models.IntegerField(primary_key=True)
-    #foto = models.CharField(max_length=200)
-    foto = models.ImageField(upload_to='fotos/')  # 'fotos/' es la carpeta donde se guardarán las imágenes
-    subasta_id_subasta = models.ForeignKey(Subasta, null=False, blank=False, on_delete=models.CASCADE)
-    producto_id_producto = models.ForeignKey(Producto, null=False, blank=False, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.titulo_publicacion
