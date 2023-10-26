@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from .models import Categoria, Producto
-from .forms import CustomUserCreationForm
+from .models import Categoria, Producto, Subasta
+from .forms import CustomUserCreationForm, SubastaForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 
@@ -42,7 +42,22 @@ def signup(request):
     return render(request, 'registration/signup.html', data)
 
 def listSubastas(request):
-    return render(request, 'subasta/listSubastas.html')
+    subastas = Subasta.objects.all()
+    data = {
+        "subastas" : subastas
+    }
+    return render(request, 'subasta/listSubastas.html', data)
 
 def agregarSubasta(request):
-    return render(request, 'subasta/agregarSubasta.html')
+    data = {
+        'form': SubastaForm()
+    }
+    if request.method == 'POST':
+        formulario = SubastaForm(data=request.POST, files=request.FILES)
+        #print("formulario ",formulario)
+        if formulario.is_valid:
+            formulario.save()
+            data['mensaje']="guardado correctamente"
+        else:
+            data["form"] = formulario
+    return render(request, 'subasta/agregarSubasta.html',data)

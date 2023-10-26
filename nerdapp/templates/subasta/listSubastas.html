@@ -1,4 +1,6 @@
-{% extends "nerdapp/base.html" %} {% block contenido %}
+{% extends 'nerdapp/base.html' %} {% block title %}Index{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}
+
 <!-- Contenedor principal utilizando clases de Bootstrap -->
 <div class="container">
 	<div class="row justify-content-end">
@@ -32,6 +34,21 @@
 	</div>
 	<br />
 	<h2 class="text-subtitulo" style="text-align: left">Listado de subastas</h2>
+	<div>
+		{% for s in subastas %}
+		<div class="product-item">
+			<div class="product-image">
+				{% if s.imagen %}
+				<img src="{{ s.imagen.url }}" alt="img subasta" />
+				{% endif %}
+			</div>
+			<div class="product-details">
+				<h3 class="product-title">{{ s.nombre | title }}</h3>
+				<p class="product-price">${{ s.precio_inicial |intcomma }}</p>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
 </div>
 
 {% endblock contenido %}
