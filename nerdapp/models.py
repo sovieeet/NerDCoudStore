@@ -42,10 +42,8 @@ class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True)
     nombre_usuario = models.CharField(max_length=200)
     nombre = models.CharField(max_length=200, null=True)
-    apellido_paterno = models.CharField(max_length=200, null=True)
-    apellido_materno = models.CharField(max_length=200, null=True)
+    apellido = models.CharField(max_length=200, null=True)
     correo = models.CharField(max_length=200)
-    telefono = models.CharField(max_length=15)
 
     def __str__(self):
         return self.nombre_usuario
