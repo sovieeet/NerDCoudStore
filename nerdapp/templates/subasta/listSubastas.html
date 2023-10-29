@@ -34,19 +34,41 @@
 	</div>
 	<br />
 	<h2 class="text-subtitulo" style="text-align: left">Listado de subastas</h2>
-	<div>
+	<div class="row">
 		{% for s in subastas %}
-		<div class="product-item">
-			<div class="product-image">
+		<div class="col-sm-4" style="margin-bottom: 20px; text-align: center">
+			<div class="subasta-image">
 				{% if s.imagen %}
 				<img src="{{ s.imagen.url }}" alt="img subasta" />
 				{% endif %}
 			</div>
-			<div class="product-details">
-				<h3 class="product-title">{{ s.nombre | title }}</h3>
-				<p class="product-price">${{ s.precio_inicial |intcomma }}</p>
+		</div>
+		<div
+			class="col-sm-8"
+			style="
+				background-color: #6264eb21;
+				border: 1px solid #ddd;
+				margin-bottom: 20px;
+			">
+			<div class="subasta-details">
+				<h3 class="subasta-title">{{ s.nombre | title }}</h3>
+				<p class="subasta-info">
+					{{ s.descripcion}}<br /><br />Oferta más alta
+				</p>
+				<p class="subasta-price">${{ s.precio_mas_alto |intcomma }}</p>
+				<p class="subasta-info">Tiempo restante</p>
+				<div class="input-group mb-3">
+					<input type="text" class="form-control" />
+					<button
+						class="btn btn-outline-secondary"
+						type="button"
+						id="button-addon2">
+						Ofertar
+					</button>
+				</div>
 			</div>
 		</div>
+		<hr />
 		{% endfor %}
 	</div>
 </div>
