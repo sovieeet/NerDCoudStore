@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Categoria, Producto, Subasta
+from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario
 from .forms import CustomUserCreationForm, SubastaForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -32,7 +32,17 @@ def signup(request):
     if request.method == 'POST':
         formulario = CustomUserCreationForm(data=request.POST)
         if formulario.is_valid():
-            formulario.save()
+            aux_user = formulario.save()
+            usuario = Usuario.objects.create(
+                id_usuario = aux_user.id,
+                nombre_usuario = aux_user.username,
+                nombre = aux_user.first_name,
+                apellido_materno = "Mat"+aux_user.last_name,
+                apellido_paterno = "Pat"+aux_user.last_name,
+                correo = aux_user.email,
+                telefono = '99999999'             
+            )
+            usuario.save()
             user = authenticate(username=formulario.cleaned_data['username'], password=formulario.cleaned_data['password1'])
             login(request, user)
             messages.success(request,"cuenta creada correctamente")
@@ -56,7 +66,13 @@ def agregarSubasta(request):
         formulario = SubastaForm(data=request.POST, files=request.FILES)
         #print("formulario ",formulario)
         if formulario.is_valid:
-            formulario.save()
+            subasta = formulario.save()  # Guarda la subasta y obtén la instancia
+            usuario = Usuario.objects.get(id_usuario=request.user.id)  # Obtiene el usuario actual
+            usuario_subasta = Usuario_subasta.objects.create(
+                usuario_id_usuario=usuario,  # Obtiene el id del usuario actual
+                subasta_id_subasta=subasta # Usa el id de la subasta recién creada
+            )
+            usuario_subasta.save()  # Guarda la relación en UsuarioSubasta
             data['mensaje']="guardado correctamente"
         else:
             data["form"] = formulario
