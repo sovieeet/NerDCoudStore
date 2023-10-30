@@ -101,3 +101,12 @@ class Publicacion(models.Model):
 
     def __str__(self):
         return self.titulo_publicacion
+    
+class ParticiparSubasta(models.Model):
+    id_participacion = models.AutoField(primary_key=True)
+    id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
+    id_subasta = models.ForeignKey(Subasta, null=False, blank=False, on_delete=models.CASCADE)
+    monto = models.IntegerField() 
+
+    def __str__(self):
+        return self.id_participacion
