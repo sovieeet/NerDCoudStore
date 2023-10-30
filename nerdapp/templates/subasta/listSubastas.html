@@ -22,6 +22,7 @@
 				</div>
 			</div>
 		</div>
+		{% if user.is_authenticated %}
 		<div class="col-4" style="text-align: center">
 			<a
 				role="button"
@@ -31,6 +32,7 @@
 				>Agregar</a
 			>
 		</div>
+		{% endif %}
 	</div>
 	<br />
 	<h2 class="text-subtitulo" style="text-align: left">Listado de subastas</h2>
@@ -50,13 +52,16 @@
 				border: 1px solid #ddd;
 				margin-bottom: 20px;
 			">
-			<div class="subasta-details">
+			<div
+				class="subasta-details"
+				data-fecha="{{ s.fecha_termino | title }}"
+				data-hora="{{ s.hora_termino | title }}">
 				<h3 class="subasta-title">{{ s.nombre | title }}</h3>
 				<p class="subasta-info">
-					{{ s.descripcion}}<br /><br />Oferta más alta
+					{{ s.descripcion}}<br />
+					Oferta mínima ${{ s.precio_inicial|intcomma}}<br />Oferta más alta
 				</p>
 				<p class="subasta-price">${{ s.precio_mas_alto |intcomma }}</p>
-				<p class="subasta-info">Tiempo restante</p>
 				<div class="input-group mb-3">
 					<input type="text" class="form-control" />
 					<button
@@ -66,11 +71,69 @@
 						Ofertar
 					</button>
 				</div>
+				<p class="subasta-info">
+					Tiempo limite: {{ s.fecha_termino }} a las {{ s.hora_termino }}
+				</p>
+				<p class="tiempo-restante"></p>
 			</div>
 		</div>
 		<hr />
 		{% endfor %}
 	</div>
 </div>
+{% endblock contenido %} {% block scriptsCode %}
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		const subastaDetails = document.querySelectorAll(".subasta-details");
+		let time = 0;
+		function actualizarTiempoRestante() {
+			subastaDetails.forEach(function (subasta) {
+				const fechaTermino = subasta.dataset.fecha;
+				const horaTermino = subasta.dataset.hora; // Agrega '00:' antes de la hora
 
-{% endblock contenido %}
+				// Verificar si fecha y hora son válidos
+				if (fechaTermino && horaTermino) {
+					const fh = fechaTermino + " " + horaTermino;
+					const fechaHoraTermino = Date.parse(fh);
+					const ahora = new Date();
+					const tiempoRestante = fechaHoraTermino - ahora;
+
+					const dias = Math.floor(tiempoRestante / (1000 * 60 * 60 * 24));
+					const horas = Math.floor(
+						(tiempoRestante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+					);
+					const minutos = Math.floor(
+						(tiempoRestante % (1000 * 60 * 60)) / (1000 * 60)
+					);
+					const segundos = Math.floor((tiempoRestante % (1000 * 60)) / 1000);
+
+					const tiempoRestanteTexto = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+
+					// Buscar el elemento que contiene el tiempo restante y actualizar su contenido
+
+					time = tiempoRestante;
+					if (time <= 0) {
+						console.log(time);
+						const inputOferta = subasta.querySelector(".form-control");
+						const botonOfertar = subasta.querySelector(
+							".btn-outline-secondary"
+						);
+						inputOferta.style.display = "none";
+						botonOfertar.style.display = "none";
+					} else {
+						const tiempoRestanteElement =
+							subasta.querySelector(".tiempo-restante");
+						tiempoRestanteElement.textContent = `Tiempo restante: ${tiempoRestanteTexto}`;
+					}
+				}
+			});
+		}
+
+		// Llamar a la función inicialmente para mostrar el tiempo restante actual
+		actualizarTiempoRestante();
+
+		// Actualizar el tiempo restante cada segundo
+		setInterval(actualizarTiempoRestante, 1000);
+	});
+</script>
+{% endblock scriptsCode %}

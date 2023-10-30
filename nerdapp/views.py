@@ -37,10 +37,8 @@ def signup(request):
                 id_usuario = aux_user.id,
                 nombre_usuario = aux_user.username,
                 nombre = aux_user.first_name,
-                apellido_materno = "Mat"+aux_user.last_name,
-                apellido_paterno = "Pat"+aux_user.last_name,
-                correo = aux_user.email,
-                telefono = '99999999'             
+                apellido = aux_user.last_name,
+                correo = aux_user.email,        
             )
             usuario.save()
             user = authenticate(username=formulario.cleaned_data['username'], password=formulario.cleaned_data['password1'])

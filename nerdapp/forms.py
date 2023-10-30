@@ -27,7 +27,7 @@ class SubastaForm(forms.models.ModelForm):
             'hora_termino' : TimePickerInput(),
             'id_subasta': forms.HiddenInput(),
         }
-        def __init__(self, *args, **kwargs):
-            super(SubastaForm, self).__init__(*args, **kwargs)
-            self.fields['precio_mas_alto'].initial = 0
-            self.fields['precio_mas_alto'].widget = forms.HiddenInput()
+    def __init__(self, *args, **kwargs):
+        super(SubastaForm, self).__init__(*args, **kwargs)
+        self.fields['precio_mas_alto'].initial = 0
+        self.fields['precio_mas_alto'].widget = forms.HiddenInput()
