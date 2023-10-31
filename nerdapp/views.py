@@ -1,4 +1,6 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
+from django.views import View
 from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta
 from .forms import CustomUserCreationForm, SubastaForm, ParticiparSubastaForm
 from django.contrib.auth import authenticate, login
@@ -48,14 +50,6 @@ def signup(request):
         data["form"] = formulario
 
     return render(request, 'registration/signup.html', data)
-
-def listSubastas(request):
-    subastas = Subasta.objects.all()
-    data = {
-        "subastas" : subastas,
-    }
-    return render(request, 'subasta/listSubastas.html', data)
-
 def agregarSubasta(request):
     data = {
         'form': SubastaForm()
@@ -75,38 +69,87 @@ def agregarSubasta(request):
         else:
             data["form"] = formulario
     return render(request, 'subasta/agregarSubasta.html',data)
+"""def listSubastas(request):
+    subastas = Subasta.objects.all()
+    data = {
+        "subastas" : subastas,
+    }
+    return render(request, 'subasta/listSubastas.html', data)
+
 
 def participarSubasta(request):
+    print("La función participarSubasta se está ejecutando.")
     data = {
-        'form': ParticiparSubastaForm
+        'form': ParticiparSubastaForm()
     }
     if request.method == 'POST':
-        print("Entro a post:")
-        formulario = ParticiparSubastaForm(data=request.POST)
-        if formulario.is_valid():
-            subasta = Subasta.objects.get(request.POST.get('subasta_id')) 
-            usuario = Usuario.objects.get(id_usuario=request.user.id)
-            monto = request.POST.get('monto')
-            participacion = ParticiparSubasta.objects.create(
-                usuario_id_usuario_id= usuario,
-                subasta_id_subasta_id = subasta,
-                monto=monto,
+        formulario = ParticiparSubastaForm(data=request.POST, files=request.FILES)
+        if formulario.is_valid:
+            usuario = Usuario.objects.get(id_usuario=request.usuario_id)             
+            subasta = Subasta.objects.get(subasta_id = request.subasta_id)
+            montoS = request.POST.get('monto')
+            print("Usuario:", usuario)
+            print("Subasta:", subasta)
+            print("Monto:", montoS)
+            participarSubastaUsuario = ParticiparSubasta.objects.create(
+                usuario_id_usuario_id=usuario,
+                subasta_id_subasta_id=subasta,
+                monto=montoS
             )
-            print("Subasta ID:",subasta.id_subasta)
-            print("Monto:", monto)
-            participacion.save()
-            messages.success(request,"participacion creada correctamente")
-            return redirect(to="index")
-        """
-        
-        usuario = Usuario.objects.get(id_usuario=request.user.id)
-        subasta = Subasta.objects.get(id_subasta=request.subasta.idid_subasta)  
-        participante = ParticiparSubasta.objects.create(
-            id_subasta_id=subasta,
-            id_usuario_id=usuario
+            participarSubastaUsuario.save()
+            data['mensaje']="guardado correctamente"
+        else:
+            data["form"] = formulario
+    #return render(request, 'subasta/agregarSubasta.html')
+"""
+
+class ListarYParticiparSubastas(View):
+    def get(self, request, *args, **kwargs):
+        subastas = Subasta.objects.all()
+        form = ParticiparSubastaForm()
+        context = {
+            'subastas': subastas,
+            'form': form,
+        }
+        return render(request, 'subasta/listSubastas.html', context)
+    def post(self, request, *args, **kwargs):
+        formulario = ParticiparSubastaForm(data=request.POST, files=request.FILES)
+        if formulario.is_valid:
+            usuario =request.POST.get('usuario_id')           
+            subasta = request.POST.get('subasta_id')
+            montoS = request.POST.get('monto')
+            print("Usuario:", usuario)
+            print("Subasta:", subasta)
+            print("Monto:", montoS)
+            """participarSubastaUsuario = ParticiparSubasta.objects.create(
+                usuario_id_usuario_id=usuario,
+                subasta_id_subasta_id=subasta,
+                monto=montoS
+            )
+            participarSubastaUsuario.save()"""
+            return render(request, 'subasta/listSubastas.html')
+        subastas = Subasta.objects.all()
+        context = {
+            'subastas': subastas,
+            'form': formulario,
+        }
+        return render(request, 'listSubastas.html', context)
+
+
+
+"""def participarSubasta(request):
+    if request.method == 'POST':
+        subasta_id = request.POST.get('subasta_id')
+        usuario_id = request.POST.get('usuario_id')
+        monto = request.POST.get('monto')
+        participacion = ParticiparSubasta.objects.create(
+            usuario_id_usuario_id= usuario_id,
+            subasta_id_subasta_id = subasta_id,
+            monto=monto,
         )
-        participante.save()  # Guarda la relación en UsuarioSubasta
-        data['mensaje']="guardado correctamente"
-        """
+        participacion.save()
+        messages.success(request,"participacion creada correctamente")
+        return HttpResponse('Participación guardada exitosamente')
         
-    return render(request, 'subasta/listSubasta.html',data)
+    else:
+        return HttpResponse('Método no permitido')"""

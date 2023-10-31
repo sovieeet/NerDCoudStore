@@ -64,21 +64,20 @@
 				<p class="subasta-price">${{ s.precio_mas_alto |intcomma }}</p>
 				{% if user.is_authenticated %}
 				<form action="" method="post" class="input-group mb-3">
-					{% csrf_token %}
-					<input type="hidden" name="subasta_id" value="{{ s.id }}" />
+					{% load crispy_forms_tags %} {% csrf_token %}
+					<input id="subasta_id" name="subasta_id" value="{{ s.id_subasta }}" />
+					<input id="usuario_id" name="usuario_id" value="{{ user.id }}" />
 					<input
 						type="number"
 						class="form-control"
 						name="monto"
-						id="monto"
 						placeholder="Ingrese el monto"
 						required />
-					<button
-						class="btn btn-outline-secondary"
+					<input
 						type="submit"
-						id="button-addon2">
-						Ofertar
-					</button>
+						value="Ofertar"
+						id="button-addon2"
+						class="btn btn-outline-secondary" />
 				</form>
 				{% else %}
 				<h3 class="subasta-title">Inicie sesion para participar</h3>

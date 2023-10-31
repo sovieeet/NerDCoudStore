@@ -7,6 +7,6 @@ urlpatterns = [
     path('categorias/', views.lista_categorias, name='lista_categorias'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('signup/', views.signup, name='signup'),
-    path('listSubastas/', views.listSubastas, name='listSubastas'),
+    path('listSubastas/', views.ListarYParticiparSubastas.as_view(), name='listSubastas'),
     path('agregarSubasta/', views.agregarSubasta, name='agregarSubasta'),
 ]
