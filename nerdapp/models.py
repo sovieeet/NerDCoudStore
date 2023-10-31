@@ -109,4 +109,4 @@ class ParticiparSubasta(models.Model):
     monto = models.IntegerField() 
 
     def __str__(self):
-        return self.id_participacion
+        return str(self.id_participacion)
