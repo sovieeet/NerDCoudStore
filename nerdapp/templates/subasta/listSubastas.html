@@ -62,15 +62,29 @@
 					Oferta mínima ${{ s.precio_inicial|intcomma}}<br />Oferta más alta
 				</p>
 				<p class="subasta-price">${{ s.precio_mas_alto |intcomma }}</p>
-				<div class="input-group mb-3">
-					<input type="text" class="form-control" />
+				{% if user.is_authenticated %}
+				<form action="" method="post" class="input-group mb-3">
+					{% csrf_token %}
+					<input type="hidden" name="subasta_id" value="{{ s.id }}" />
+					<input
+						type="number"
+						class="form-control"
+						name="monto"
+						id="monto"
+						placeholder="Ingrese el monto"
+						required />
 					<button
 						class="btn btn-outline-secondary"
-						type="button"
+						type="submit"
 						id="button-addon2">
 						Ofertar
 					</button>
-				</div>
+				</form>
+				{% else %}
+				<h3 class="subasta-title">Inicie sesion para participar</h3>
+
+				{% endif %}
+
 				<p class="subasta-info">
 					Tiempo limite: {{ s.fecha_termino }} a las {{ s.hora_termino }}
 				</p>
@@ -113,7 +127,6 @@
 
 					time = tiempoRestante;
 					if (time <= 0) {
-						console.log(time);
 						const inputOferta = subasta.querySelector(".form-control");
 						const botonOfertar = subasta.querySelector(
 							".btn-outline-secondary"

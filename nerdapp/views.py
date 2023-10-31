@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
-from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario
-from .forms import CustomUserCreationForm, SubastaForm
+from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta
+from .forms import CustomUserCreationForm, SubastaForm, ParticiparSubastaForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-
+from django.db.models import Q
 
 def index(request):
     productos = Producto.objects.all()
@@ -52,7 +52,7 @@ def signup(request):
 def listSubastas(request):
     subastas = Subasta.objects.all()
     data = {
-        "subastas" : subastas
+        "subastas" : subastas,
     }
     return render(request, 'subasta/listSubastas.html', data)
 
@@ -75,3 +75,38 @@ def agregarSubasta(request):
         else:
             data["form"] = formulario
     return render(request, 'subasta/agregarSubasta.html',data)
+
+def participarSubasta(request):
+    data = {
+        'form': ParticiparSubastaForm
+    }
+    if request.method == 'POST':
+        print("Entro a post:")
+        formulario = ParticiparSubastaForm(data=request.POST)
+        if formulario.is_valid():
+            subasta = Subasta.objects.get(request.POST.get('subasta_id')) 
+            usuario = Usuario.objects.get(id_usuario=request.user.id)
+            monto = request.POST.get('monto')
+            participacion = ParticiparSubasta.objects.create(
+                id_usuario_id= usuario,
+                id_subasta_id = subasta,
+                monto=monto,
+            )
+            print("Subasta ID:",subasta.id_subasta)
+            print("Monto:", monto)
+            participacion.save()
+            messages.success(request,"participacion creada correctamente")
+            return redirect(to="index")
+        """
+        
+        usuario = Usuario.objects.get(id_usuario=request.user.id)
+        subasta = Subasta.objects.get(id_subasta=request.subasta.idid_subasta)  
+        participante = ParticiparSubasta.objects.create(
+            id_subasta_id=subasta,
+            id_usuario_id=usuario
+        )
+        participante.save()  # Guarda la relación en UsuarioSubasta
+        data['mensaje']="guardado correctamente"
+        """
+        
+    return render(request, 'subasta/listSubasta.html',data)

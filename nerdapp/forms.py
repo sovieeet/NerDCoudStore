@@ -2,7 +2,7 @@ from bootstrap_datepicker_plus.widgets  import DatePickerInput, TimePickerInput
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Subasta
+from .models import Subasta, ParticiparSubasta
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -31,3 +31,10 @@ class SubastaForm(forms.models.ModelForm):
         super(SubastaForm, self).__init__(*args, **kwargs)
         self.fields['precio_mas_alto'].initial = 0
         self.fields['precio_mas_alto'].widget = forms.HiddenInput()
+
+class ParticiparSubastaForm(forms.models.ModelForm):
+    class Meta:
+        db_table = 'nerdapp_participarsubasta'
+        model = ParticiparSubasta
+        fields = '__all__'
+        
