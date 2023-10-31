@@ -88,8 +88,8 @@ def participarSubasta(request):
             usuario = Usuario.objects.get(id_usuario=request.user.id)
             monto = request.POST.get('monto')
             participacion = ParticiparSubasta.objects.create(
-                id_usuario_id= usuario,
-                id_subasta_id = subasta,
+                usuario_id_usuario_id= usuario,
+                subasta_id_subasta_id = subasta,
                 monto=monto,
             )
             print("Subasta ID:",subasta.id_subasta)
