@@ -12,5 +12,6 @@ admin.site.register(Region)
 admin.site.register(Comentario)
 admin.site.register(Publicacion)
 admin.site.register(Usuario_subasta)
+admin.site.register(ParticiparSubasta)
 
 # Register your models here.
