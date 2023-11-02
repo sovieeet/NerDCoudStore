@@ -78,15 +78,16 @@ WSGI_APPLICATION = 'nerdcoudstore.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-     'default': {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'coudstorenerd',
-        'USER': 'duocmanuel',
-        'PASSWORD': 'puentealto2023',
-        'HOST': 'coudstorenerd.cnsw3yrlmust.us-east-2.rds.amazonaws.com',   # Si tu base de datos está en la misma máquina
-        'PORT': '5432',             # Deja esto en blanco para usar el puerto predeterminado
+        'HOST': '34.68.171.221',
+        'NAME': 'nerdcoudstore',
+        'USER': 'postgres',
+        'PASSWORD': 'Duoc.2023',
+        'PORT': '5432',  # Puerto por defecto para PostgreSQL
     }
 }
+
 
 
 # Password validation
