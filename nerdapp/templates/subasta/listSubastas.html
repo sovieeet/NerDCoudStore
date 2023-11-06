@@ -36,6 +36,12 @@
 	</div>
 	<br />
 	<h2 class="text-subtitulo" style="text-align: left">Listado de subastas</h2>
+	<div
+		id="mensaje"
+		class="{% if mensaje %}alert alert-info{% else %}d-none{% endif %}"
+		role="alert">
+		{{ mensaje }}
+	</div>
 	<div class="row">
 		{% for s in subastas %}
 		<div class="col-sm-4" style="margin-bottom: 20px; text-align: center">
@@ -65,8 +71,18 @@
 				{% if user.is_authenticated %}
 				<form action="" method="post" class="input-group mb-3">
 					{% load crispy_forms_tags %} {% csrf_token %}
-					<input id="subasta_id" name="subasta_id" value="{{ s.id_subasta }}" />
-					<input id="usuario_id" name="usuario_id" value="{{ user.id }}" />
+
+					<input
+						<input
+						type="hidden"
+						id="subasta_id"
+						name="subasta_id"
+						value="{{ s.id_subasta }}" />
+					<input
+						type="hidden"
+						id="usuario_id"
+						name="usuario_id"
+						value="{{ user.id }}" />
 					<input
 						type="number"
 						class="form-control"
@@ -147,5 +163,13 @@
 		// Actualizar el tiempo restante cada segundo
 		setInterval(actualizarTiempoRestante, 1000);
 	});
+	const mensajeElement = document.getElementById("mensaje");
+	if (mensajeElement.textContent.trim() !== "") {
+		mensajeElement.classList.remove("d-none");
+		// Muestra la alerta por 3 segundos y luego redirige la página
+		setTimeout(function () {
+			mensajeElement.classList.add("d-none");
+		}, 3000);
+	}
 </script>
 {% endblock scriptsCode %}

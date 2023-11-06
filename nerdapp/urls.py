@@ -9,4 +9,5 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('listSubastas/', views.ListarYParticiparSubastas.as_view(), name='listSubastas'),
     path('agregarSubasta/', views.agregarSubasta, name='agregarSubasta'),
+    path('participacionSubasta/<int:subasta_id>/<int:monto>/', views.participacionSubasta, name='participacionSubasta')
 ]

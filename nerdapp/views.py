@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
@@ -69,6 +70,10 @@ def agregarSubasta(request):
         else:
             data["form"] = formulario
     return render(request, 'subasta/agregarSubasta.html',data)
+
+def participacionSubasta(request):
+    return render(request, 'subasta/participacionSubasta.html')
+
 """def listSubastas(request):
     subastas = Subasta.objects.all()
     data = {
@@ -114,28 +119,54 @@ class ListarYParticiparSubastas(View):
         return render(request, 'subasta/listSubastas.html', context)
     def post(self, request, *args, **kwargs):
         formulario = ParticiparSubastaForm(data=request.POST, files=request.FILES)
-        if formulario.is_valid:
-            usuario =request.POST.get('usuario_id')           
-            subasta = request.POST.get('subasta_id')
-            montoS = request.POST.get('monto')
-            print("Usuario:", usuario)
-            print("Subasta:", subasta)
-            print("Monto:", montoS)
-            """participarSubastaUsuario = ParticiparSubasta.objects.create(
-                usuario_id_usuario_id=usuario,
-                subasta_id_subasta_id=subasta,
-                monto=montoS
-            )
-            participarSubastaUsuario.save()"""
-            return render(request, 'subasta/listSubastas.html')
         subastas = Subasta.objects.all()
         context = {
             'subastas': subastas,
             'form': formulario,
         }
-        return render(request, 'listSubastas.html', context)
+        usuario =request.POST.get('usuario_id')           
+        subasta = request.POST.get('subasta_id')
+        montoS = request.POST.get('monto')
+        subastaClass = Subasta.objects.get(id_subasta=subasta)
+        print("Usuario:", usuario)
+        print("Subasta:", subasta)
+        print("precio_inicial:", subastaClass.precio_inicial)
+        print("precio_mas_alto:", subastaClass.precio_mas_alto)
+        print("Monto:", montoS)
+        if formulario.is_valid and int(montoS) > int(subastaClass.precio_inicial) and int(montoS) >  int(subastaClass.precio_mas_alto) :
+            usuarioClass = Usuario.objects.get(id_usuario=request.user.id)      
+            participarSubastaUsuario = ParticiparSubasta.objects.create(
+                usuario_id_usuario_id=usuarioClass,
+                subasta_id_subasta_id=subastaClass,
+                monto=montoS
+            )
+            participarSubastaUsuario.save()
+            subastaClass.precio_mas_alto = montoS
+            subastaClass.save()
+            return redirect(reverse('participacionSubasta', args=[subasta, montoS]))
+        elif  int(montoS) < int(subastaClass.precio_inicial) :
+            context['mensaje'] = 'El monto ingresado es menor a la oferta mas alta'
+        else:
+            context['mensaje'] = 'Hubo un error al procesar el formulario. Por favor, inténtelo de nuevo.'
 
+        return render(request, 'subasta/listSubastas.html', context)
 
+def participacionSubasta(request, subasta_id, monto):
+    print("Subasta:", subasta_id)
+    print("Monto:", monto)
+    try:
+        subasta = Subasta.objects.get(id_subasta=subasta_id)
+        context = {
+            'subasta': subasta,
+            'descripcion' : subasta.descripcion,
+            'fecha_termino' : subasta.fecha_termino,
+            'hora_termino' : subasta.hora_termino,
+            'monto': monto,
+        }
+        return render(request, 'subasta/participacionSubasta.html', context)
+    except Subasta.DoesNotExist:
+        # Manejar el caso cuando la subasta no existe
+        return HttpResponse("Subasta no encontrada.")
 
 """def participarSubasta(request):
     if request.method == 'POST':
