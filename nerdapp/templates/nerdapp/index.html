@@ -22,10 +22,11 @@
 					<div class="product-image">
 						{% if p.imagen %}
 						<img src="{{ p.imagen.url }}" alt="img product" />
+						</a><br>
 						{% endif %}
 					</div>
 					<div class="product-details">
-						<h3 class="product-title">{{ p.nombre | title }}</h3>
+						<a href="{% url 'checkout' p.id_producto %}" class="product-title"> {{ p.nombre | title }}</a>
 						<p class="product-price">${{ p.precio |intcomma }}</p>
 					</div>
 				</div>

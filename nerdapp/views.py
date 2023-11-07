@@ -1,15 +1,19 @@
 from django.urls import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta
 from .forms import CustomUserCreationForm, SubastaForm, ParticiparSubastaForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from paypal.standard.forms import PayPalPaymentsForm
+from django.conf import settings
+import uuid
 from django.db.models import Q
 
 def index(request):
     productos = Producto.objects.all()
+
     data = {
         'productos': productos
     }
@@ -21,6 +25,9 @@ def dashboard(request):
 
 def page2(request):
     return render(request, 'nerdapp/page2.html')
+
+def testPaypal(request):
+    return render(request, 'payment/testpaypal.html')
 
 def lista_categorias(request):
     categorias = Categoria.objects.all()
@@ -184,3 +191,54 @@ def participacionSubasta(request, subasta_id, monto):
         
     else:
         return HttpResponse('Método no permitido')"""
+
+
+def ProductView(request):
+
+    get_productos = Producto.objects.all()
+
+    return render(request, 'product.html', {'productos': get_productos})
+
+def CheckOut(request, id_producto):
+
+    productos = Producto.objects.get(id_producto=id_producto)
+
+    clp_a_usd = 0.0011
+    
+    precio_clp = float(productos.precio)
+
+    monto_usd = precio_clp * clp_a_usd
+
+    host = request.get_host()
+
+    paypal_checkout = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': monto_usd,
+        'item_name': productos.nombre,
+        'invoice': uuid.uuid4(),
+        'currency_code': 'USD',
+        'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+        'return_url': f"http://{host}{reverse('payment-success', kwargs = {'id_producto': productos.id_producto})}",
+        'cancel_url': f"http://{host}{reverse('payment-failed', kwargs = {'id_producto': productos.id_producto})}",
+    }
+
+    paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
+
+    context = {
+        'productos': productos,
+        'paypal': paypal_payment
+    }
+
+    return render(request, 'nerdapp/checkout.html', context)
+
+def PaymentSuccessful(request, id_producto):
+
+    productos = Producto.objects.get(id_producto=id_producto)
+
+    return render(request, 'nerdapp/payment-success.html', {'productos': productos})
+
+def paymentFailed(request, id_producto):
+
+    productos = Producto.objects.get(id_producto=id_producto)
+
+    return render(request, 'nerdapp/payment-failed.html', {'productos': productos})

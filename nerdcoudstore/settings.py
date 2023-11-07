@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'django.contrib.humanize',
+    'paypal.standard.ipn',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
+
+PAYPAL_RECEIVER_EMAIL = 'sb-0draa15177946@business.example.com'
+PAYPAL_TEST = True
+
