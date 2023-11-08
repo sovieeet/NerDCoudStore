@@ -1,3 +1,4 @@
+import datetime
 from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -7,6 +8,7 @@ from .forms import CustomUserCreationForm, SubastaForm, ParticiparSubastaForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from django.db.models import Q
+from django.core.mail import send_mail
 
 def index(request):
     productos = Producto.objects.all()
@@ -26,6 +28,9 @@ def lista_categorias(request):
     categorias = Categoria.objects.all()
     print(categorias)
     return render(request, 'nerdapp/lista_categorias.html', {'categorias': categorias})
+
+def listForo(request):
+    return render(request, 'foro/listForo.html')
 
 def signup(request):
     data = {
@@ -71,46 +76,9 @@ def agregarSubasta(request):
             data["form"] = formulario
     return render(request, 'subasta/agregarSubasta.html',data)
 
-def participacionSubasta(request):
-    return render(request, 'subasta/participacionSubasta.html')
-
-"""def listSubastas(request):
-    subastas = Subasta.objects.all()
-    data = {
-        "subastas" : subastas,
-    }
-    return render(request, 'subasta/listSubastas.html', data)
-
-
-def participarSubasta(request):
-    print("La función participarSubasta se está ejecutando.")
-    data = {
-        'form': ParticiparSubastaForm()
-    }
-    if request.method == 'POST':
-        formulario = ParticiparSubastaForm(data=request.POST, files=request.FILES)
-        if formulario.is_valid:
-            usuario = Usuario.objects.get(id_usuario=request.usuario_id)             
-            subasta = Subasta.objects.get(subasta_id = request.subasta_id)
-            montoS = request.POST.get('monto')
-            print("Usuario:", usuario)
-            print("Subasta:", subasta)
-            print("Monto:", montoS)
-            participarSubastaUsuario = ParticiparSubasta.objects.create(
-                usuario_id_usuario_id=usuario,
-                subasta_id_subasta_id=subasta,
-                monto=montoS
-            )
-            participarSubastaUsuario.save()
-            data['mensaje']="guardado correctamente"
-        else:
-            data["form"] = formulario
-    #return render(request, 'subasta/agregarSubasta.html')
-"""
-
 class ListarYParticiparSubastas(View):
     def get(self, request, *args, **kwargs):
-        subastas = Subasta.objects.all()
+        subastas = Subasta.objects.all().order_by('-fecha_inicio')
         form = ParticiparSubastaForm()
         context = {
             'subastas': subastas,
@@ -119,7 +87,7 @@ class ListarYParticiparSubastas(View):
         return render(request, 'subasta/listSubastas.html', context)
     def post(self, request, *args, **kwargs):
         formulario = ParticiparSubastaForm(data=request.POST, files=request.FILES)
-        subastas = Subasta.objects.all()
+        subastas = Subasta.objects.all().order_by('-fecha_inicio')
         context = {
             'subastas': subastas,
             'form': formulario,
@@ -165,22 +133,14 @@ def participacionSubasta(request, subasta_id, monto):
         }
         return render(request, 'subasta/participacionSubasta.html', context)
     except Subasta.DoesNotExist:
-        # Manejar el caso cuando la subasta no existe
         return HttpResponse("Subasta no encontrada.")
 
-"""def participarSubasta(request):
-    if request.method == 'POST':
-        subasta_id = request.POST.get('subasta_id')
-        usuario_id = request.POST.get('usuario_id')
-        monto = request.POST.get('monto')
-        participacion = ParticiparSubasta.objects.create(
-            usuario_id_usuario_id= usuario_id,
-            subasta_id_subasta_id = subasta_id,
-            monto=monto,
-        )
-        participacion.save()
-        messages.success(request,"participacion creada correctamente")
-        return HttpResponse('Participación guardada exitosamente')
-        
-    else:
-        return HttpResponse('Método no permitido')"""
+"""
+def enviar_correo(subasta):
+    subject = 'Subasta finalizada'
+    message = f'La subasta {subasta.nombre} ha finalizado. ¡Felicidades! Tu oferta de ${subasta.precio_mas_alto} ha ganado.'
+    from_email = 'your-email@example.com'
+    recipient_list = [subasta.usuario_id_usuario_id.correo]  # Dirección de correo del usuario que ganó la subasta
+
+    send_mail(subject, message, from_email, recipient_list)
+"""
