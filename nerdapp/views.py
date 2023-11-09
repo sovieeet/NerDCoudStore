@@ -2,7 +2,7 @@ from django.urls import reverse
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta
+from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta, Publicacion
 from .forms import CustomUserCreationForm, SubastaForm, ParticiparSubastaForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -242,3 +242,10 @@ def paymentFailed(request, id_producto):
     productos = Producto.objects.get(id_producto=id_producto)
 
     return render(request, 'nerdapp/payment-failed.html', {'productos': productos})
+
+def listForo(request):
+    publicaciones = Publicacion.objects.all()
+    context = {
+            'publicaciones': publicaciones,
+        }
+    return render(request, 'foro/listForo.html', context)

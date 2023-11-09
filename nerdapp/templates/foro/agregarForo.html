@@ -1,0 +1,46 @@
+{% extends "nerdapp/base.html" %} {% block contenido %}
+
+	<div style="
+	background-color: #6264eb21;
+	border: 1px solid #ddd;
+	margin-bottom: 20px;
+	border-radius: 5px; 
+	position: relative;
+"><div class="row" style="padding: 2%; ">
+	 <div class="col">
+      <button type="button" class="btn btn-secondary" style=" text-align: start;padding: 2% 10%; ">Crear Tema</button>
+    </div>
+	<div class="col-6">
+    </div>
+    <div class="col">
+      <h5 class="card-title" style="text-align: end;padding: 2% 10%;">Mis publicaciones</h5>
+    </div>
+</div>
+ </div>  
+	<h2 class="text-subtitulo" style="text-align: left">Foro público</h2> 
+	<div class="row"></div>
+<div class="row">
+	<div
+			class="col"
+			style="
+				background-color: #6264eb21;
+				border: 1px solid #ddd;
+				margin-bottom: 20px;
+	border-radius: 5px; 
+			">
+			<div style="text-align: start">
+				<small
+					><small>Autor Foro <i>UserName</i></small></small
+				>
+				<div class="subasta-title">Título Puclicación</div>
+				<div class="col-5 col-md-7">
+					<input
+						class="form-control me-2"
+						type="search"
+						placeholder="Buscar"
+						aria-label="Search"
+						style="width: 100%" />
+				</div>
+			</div>
+</div>
+{% endblock contenido %}  

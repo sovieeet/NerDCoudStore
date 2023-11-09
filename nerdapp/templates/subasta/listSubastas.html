@@ -38,10 +38,11 @@
 	<h2 class="text-subtitulo" style="text-align: left">Listado de subastas</h2>
 	<div
 		id="mensaje"
-		class="{% if mensaje %}alert alert-info{% else %}d-none{% endif %}"
+		class="{% if mensaje %}alert alert-danger fade show{% else %}d-none{% endif %}"
 		role="alert">
-		{{ mensaje }}
+		<strong>{{ mensaje }}</strong>
 	</div>
+
 	<div class="row">
 		{% for s in subastas %}
 		<div class="col-sm-4" style="margin-bottom: 20px; text-align: center">
@@ -58,6 +59,11 @@
 				border: 1px solid #ddd;
 				margin-bottom: 20px;
 			">
+			<div style="text-align: end">
+				<small
+					><small>N°: <i>{{ s.id_subasta}}</i></small></small
+				>
+			</div>
 			<div
 				class="subasta-details"
 				data-fecha="{{ s.fecha_termino | title }}"
@@ -69,6 +75,7 @@
 				</p>
 				<p class="subasta-price">${{ s.precio_mas_alto |intcomma }}</p>
 				{% if user.is_authenticated %}
+
 				<form action="" method="post" class="input-group mb-3">
 					{% load crispy_forms_tags %} {% csrf_token %}
 
@@ -172,4 +179,5 @@
 		}, 3000);
 	}
 </script>
+
 {% endblock scriptsCode %}

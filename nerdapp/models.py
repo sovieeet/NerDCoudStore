@@ -94,8 +94,8 @@ class Usuario_subasta(models.Model):
 class Publicacion(models.Model):
     id_publicacion = models.AutoField(primary_key=True)
     titulo_publicacion = models.CharField(max_length=200)
-    descripcion_publicacion = models.IntegerField() 
-    fecha_publicacion = models.DateField()
+    descripcion_publicacion = models.CharField(max_length=1000)
+    fecha_publicacion = models.DateTimeField(auto_now_add=True)
     estado_publicacion = models.CharField(max_length=200)
     usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
 

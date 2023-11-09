@@ -1,0 +1,57 @@
+{% extends "nerdapp/base.html" %} {% block contenido %}
+
+<div style="
+	background-color: #6264eb21;
+	border: 1px solid #ddd;
+	margin-bottom: 20px;
+	border-radius: 5px; 
+	position: relative;
+">
+	<div class="row" style="padding: 2%; ">
+		<div class="col">
+			<button type="button" class="btn btn-secondary" style=" text-align: start;padding: 2% 10%; ">Crear
+				Tema</button>
+		</div>
+		<div class="col-6">
+		</div>
+		<div class="col">
+			<h5 class="card-title" style="text-align: end;padding: 2% 10%;">Mis
+				publicaciones</h5>
+		</div>
+	</div>
+</div>
+<h2 class="text-subtitulo" style="text-align: left">Foro público</h2>
+<div class="row"></div>
+<div class="row">
+
+	{% for p in publicaciones %}
+	<div class="col" style="
+				background-color: #6264eb21;
+				border: 1px solid #ddd;
+				margin-bottom: 20px;
+	border-radius: 5px; 
+			">
+		<div style="text-align: start">
+			<small><small>Autor Foro <i>{{ p.usuario_id_usuario.nombre_usuario}}</i></small></small>
+			<br>
+		</div>
+
+		<div style="text-align: start">
+			<div class="subasta-title">{{ p.titulo_publicacion}}</div>
+			<div class="col" style="background-color: #6264eb21;
+				border: 1px solid #ddd;
+				
+	border-radius: 5px; padding: 2%; ">
+				{{ p.descripcion_publicacion}}
+			</div>
+
+		</div>
+		<div style="text-align: end; margin-bottom: 20px;">
+			<small><small><i>{{ p.fecha_publicacion}}</i></small></small>
+		</div>
+	</div>
+
+	<hr />
+	{% endfor %}
+</div>
+{% endblock contenido %}
