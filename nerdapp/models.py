@@ -62,16 +62,6 @@ class Subasta(models.Model):
 
     def __str__(self):
         return self.nombre
-    
-class Comentario(models.Model):
-    id_comentario = models.AutoField(primary_key=True)
-    comentario = models.CharField(max_length=200)
-    fecha_comentario = models.DateField()
-    estado_comentario = models.CharField(max_length=200)
-    usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.comentario
 
 class Carrito(models.Model):
     id_carrito = models.AutoField(primary_key=True)
@@ -99,8 +89,20 @@ class Publicacion(models.Model):
     estado_publicacion = models.CharField(max_length=200)
     usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def _str_(self):
         return self.titulo_publicacion
+
+
+class Comentario(models.Model):
+    id_comentario = models.AutoField(primary_key=True)
+    comentario = models.CharField(max_length=200)
+    fecha_comentario = models.DateField()
+    estado_comentario = models.CharField(max_length=200)
+    usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
+    publicacion_id_publicacion = models.ForeignKey(Publicacion, null=False, blank=False, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.comentario
     
 class ParticiparSubasta(models.Model):
     id_participacion = models.AutoField(primary_key=True)

@@ -8,11 +8,7 @@
 			<div class="row row-cols-3 justify-content-end">
 				<div class="col-5 col-md-3">Buscar Subasta</div>
 				<div class="col-5 col-md-7">
-					<input
-						class="form-control me-2"
-						type="search"
-						placeholder="Buscar"
-						aria-label="Search"
+					<input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"
 						style="width: 100%" />
 				</div>
 				<div class="col-2 col-md-2">
@@ -24,22 +20,14 @@
 		</div>
 		{% if user.is_authenticated %}
 		<div class="col-4" style="text-align: center">
-			<a
-				role="button"
-				href="{% url 'agregarSubasta' %}"
-				class="btn-crear p-3"
-				style="text-decoration: none"
-				>Agregar</a
-			>
+			<a role="button" href="{% url 'agregarSubasta' %}" class="btn-crear p-3"
+				style="text-decoration: none">Agregar</a>
 		</div>
 		{% endif %}
 	</div>
 	<br />
 	<h2 class="text-subtitulo" style="text-align: left">Listado de subastas</h2>
-	<div
-		id="mensaje"
-		class="{% if mensaje %}alert alert-danger fade show{% else %}d-none{% endif %}"
-		role="alert">
+	<div id="mensaje" class="{% if mensaje %}alert alert-danger fade show{% else %}d-none{% endif %}" role="alert">
 		<strong>{{ mensaje }}</strong>
 	</div>
 
@@ -52,21 +40,15 @@
 				{% endif %}
 			</div>
 		</div>
-		<div
-			class="col-sm-8"
-			style="
+		<div class="col-sm-8" style="
 				background-color: #6264eb21;
 				border: 1px solid #ddd;
 				margin-bottom: 20px;
 			">
 			<div style="text-align: end">
-				<small
-					><small>N°: <i>{{ s.id_subasta}}</i></small></small
-				>
+				<small><small>N°: <i>{{ s.id_subasta}}</i></small></small>
 			</div>
-			<div
-				class="subasta-details"
-				data-fecha="{{ s.fecha_termino | title }}"
+			<div class="subasta-details" data-fecha="{{ s.fecha_termino | title }}"
 				data-hora="{{ s.hora_termino | title }}">
 				<h3 class="subasta-title">{{ s.nombre | title }}</h3>
 				<p class="subasta-info">
@@ -79,28 +61,10 @@
 				<form action="" method="post" class="input-group mb-3">
 					{% load crispy_forms_tags %} {% csrf_token %}
 
-					<input
-						<input
-						type="hidden"
-						id="subasta_id"
-						name="subasta_id"
-						value="{{ s.id_subasta }}" />
-					<input
-						type="hidden"
-						id="usuario_id"
-						name="usuario_id"
-						value="{{ user.id }}" />
-					<input
-						type="number"
-						class="form-control"
-						name="monto"
-						placeholder="Ingrese el monto"
-						required />
-					<input
-						type="submit"
-						value="Ofertar"
-						id="button-addon2"
-						class="btn btn-outline-secondary" />
+					<input <input type="hidden" id="subasta_id" name="subasta_id" value="{{ s.id_subasta }}" />
+					<input type="hidden" id="usuario_id" name="usuario_id" value="{{ user.id }}" />
+					<input type="number" class="form-control" name="monto" placeholder="Ingrese el monto" required />
+					<input type="submit" value="Ofertar" id="button-addon2" class="btn btn-outline-secondary" />
 				</form>
 				{% else %}
 				<h3 class="subasta-title">Inicie sesion para participar</h3>
