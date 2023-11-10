@@ -14,4 +14,6 @@ urlpatterns = [
     path('payment-failed/<int:id_producto>/', views.paymentFailed, name='payment-failed'),
     path('products/', views.ProductView, name='products'),
     path('listForo/', views.listForo, name='listForo'),
+    path('agregarForo/', views.agregarForo, name='agregarForo'),
+
 ]

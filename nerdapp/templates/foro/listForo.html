@@ -9,8 +9,11 @@
 ">
 	<div class="row" style="padding: 2%; ">
 		<div class="col">
-			<button type="button" class="btn btn-secondary" style=" text-align: start;padding: 2% 10%; ">Crear
-				Tema</button>
+			{% if user.is_authenticated %}
+			<button type="button" class="btn btn-secondary" style=" text-align: start;padding: 2% 10%; ">
+				<a href="{% url 'agregarForo' %}" style="text-decoration: none; color: white;">Crear Tema</a>
+			</button>
+			{% endif %}
 		</div>
 		<div class="col-6">
 		</div>

@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta, Publicacion
-from .forms import CustomUserCreationForm, SubastaForm, ParticiparSubastaForm
+from .forms import CustomUserCreationForm, SubastaForm, ParticiparSubastaForm, ForoForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from paypal.standard.forms import PayPalPaymentsForm
@@ -63,6 +63,7 @@ def signup(request):
         data["form"] = formulario
 
     return render(request, 'registration/signup.html', data)
+
 def agregarSubasta(request):
     data = {
         'form': SubastaForm()
@@ -142,24 +143,6 @@ def participacionSubasta(request, subasta_id, monto):
     except Subasta.DoesNotExist:
         return HttpResponse("Subasta no encontrada.")
 
-"""def participarSubasta(request):
-    if request.method == 'POST':
-        subasta_id = request.POST.get('subasta_id')
-        usuario_id = request.POST.get('usuario_id')
-        monto = request.POST.get('monto')
-        participacion = ParticiparSubasta.objects.create(
-            usuario_id_usuario_id= usuario_id,
-            subasta_id_subasta_id = subasta_id,
-            monto=monto,
-        )
-        participacion.save()
-        messages.success(request,"participacion creada correctamente")
-        return HttpResponse('Participación guardada exitosamente')
-        
-    else:
-        return HttpResponse('Método no permitido')"""
-
-
 def ProductView(request):
 
     get_productos = Producto.objects.all()
@@ -225,3 +208,18 @@ def listForo(request):
             'publicaciones': publicaciones,
         }
     return render(request, 'foro/listForo.html', context)
+
+def agregarForo(request):
+    data = {'form': ForoForm()}
+    if request.method =="POST":
+        formulario = ForoForm(data=request.POST, files=request.FILES)
+        print(formulario)
+        if formulario.is_valid():
+            print("formulario valido")
+            formulario.save()
+            #usuario = Usuario.objects.get(id_usuario=request.user.id)  # Obtiene el usuario actual
+            data['mensaje']="guardado correctamente"
+        else:
+            print("formulario no valido")
+            data["form"] = formulario
+    return render(request, 'foro/agregarForo.html',data)
