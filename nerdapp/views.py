@@ -3,7 +3,8 @@ from django.urls import reverse
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta, Publicacion
+from .models import *
+#from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta, Publicacion
 from .forms import CustomUserCreationForm, SubastaForm, ParticiparSubastaForm, ForoForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -204,8 +205,10 @@ def enviar_correo(subasta):
 
 def listForo(request):
     publicaciones = Publicacion.objects.all()
+    comentarios = Comentario.objects.all()
     context = {
             'publicaciones': publicaciones,
+            'comentarios': comentarios
         }
     return render(request, 'foro/listForo.html', context)
 

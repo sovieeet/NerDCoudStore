@@ -34,24 +34,44 @@
 				margin-bottom: 20px;
 	border-radius: 5px; 
 			">
-		<div style="text-align: start">
-			<small><small>Autor Foro <i>{{ p.usuario_id_usuario.nombre_usuario}}</i></small></small>
-			<br>
+		<div class="row" style="text-align: start">
+			<small class="col"><small>Autor Foro <i>{{ p.usuario_id_usuario.nombre_usuario}}</i></small></small>
+			<div class="col" style="text-align: end; ">
+				<small><small><i>{{ p.fecha_publicacion}}</i></small></small>
+			</div>
 		</div>
 
 		<div style="text-align: start">
 			<div class="subasta-title">{{ p.titulo_publicacion}}</div>
+
 			<div class="col" style="background-color: #6264eb21;
-				border: 1px solid #ddd;
-				
-	border-radius: 5px; padding: 2%; ">
+				border: 1px solid #ddd;border-radius: 5px; padding: 2%; ">
 				{{ p.descripcion_publicacion}}
+				<br><br>
+
+				<small><small><i>Respuestas de Usuarios</i></small></small>
+				<div style="text-align: start; overflow-y:scroll;
+        overflow-x:hidden; height:200px">
+					{% for c in comentarios %}
+					{% if c.publicacion_id_publicacion.id_publicacion == p.id_publicacion %}
+
+					<div class="row" style="background-color: #6264eb21;
+											border: 1px solid #ddd;border-radius: 5px; padding: 2%;
+											width: 90%; margin-bottom: 1%;">
+						<div class=" col-2" style="background-color: #6264eb21; padding: 1%; text-align: center
+						; border-radius: 20px;">
+							{{c.usuario_id_usuario.nombre_usuario}}</div>
+						<div class=" col-8" style="border-left: 1px solid #6264eb21; margin: 1%;">{{ c.comentario }}
+						</div>
+					</div>
+					{% endif %}
+					{% endfor %}
+				</div>
 			</div>
 
 		</div>
-		<div style="text-align: end; margin-bottom: 20px;">
-			<small><small><i>{{ p.fecha_publicacion}}</i></small></small>
-		</div>
+
+
 	</div>
 
 	<hr />
