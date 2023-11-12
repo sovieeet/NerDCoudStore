@@ -110,7 +110,7 @@ class Carrito(models.Model):
     total_carrito = models.IntegerField()
 
     def __str__(self):
-        return self.id_carrito
+        return str(self.id_carrito)
 
 class CarritoProducto(models.Model):
     id_carrito_producto = models.AutoField(primary_key=True)
