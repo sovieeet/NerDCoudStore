@@ -14,9 +14,6 @@ import uuid
 from django.db.models import Q
 from django.core.mail import send_mail
 from nerdcoudstore.settings import EMAIL_HOST_USER
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
 
 def index(request):
     productos = Producto.objects.all()[:3]
@@ -61,8 +58,8 @@ def signup(request):
                 correo = aux_user.email,        
             )
             
-            subject = "Usuario Creado" 
-            message = "Estimado/Estimada" + " " + aux_user.username + ", su cuenta de NerdCoudStore ha sido creada."
+            subject = "Usuario/a Creado" 
+            message = "Estimado/a usuario/a" + " " + aux_user.username + ", su cuenta de NerdCoudStore ha sido creada."
             email = aux_user.email
             recipient_list = [email]
             send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True) 
@@ -90,8 +87,18 @@ def agregarSubasta(request):
                 usuario_id_usuario=usuario,  # Obtiene el id del usuario actual
                 subasta_id_subasta=subasta # Usa el id de la subasta recién creada
             )
+
+            subject = "Subasta Creada" 
+            message = "Estimado/a " + usuario.nombre_usuario + ", su subasta '" + subasta.nombre + "' ha sido creada con un valor inicial de " + "$" + str(subasta.precio_inicial) + " CLP."
+            email = usuario.correo
+            recipient_list = [email]
+            html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" title="source: imgur.com" />
+            <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
+            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+
             usuario_subasta.save()  # Guarda la relación en UsuarioSubasta
             data['mensaje']="guardado correctamente"
+            return redirect('listSubastas')
         else:
             data["form"] = formulario
     return render(request, 'subasta/agregarSubasta.html',data)
@@ -265,33 +272,3 @@ def agregarForo(request):
             print("formulario no valido")
             data["form"] = formulario
     return render(request, 'foro/agregarForo.html',data)
-
-
-def post(self, request):
-        try:
-            data = request.data
-            serializer = OrderSerializer(data=data)  
-
-            if not serializer.is_valid():
-                return Response({
-                'data': serializer.errors,
-                'message': "Something went wrong"
-            }, status= status.HTTP_400_BAD_REQUEST)
-
-            subject = "New Order is Placed" 
-            message = "Dear Customer" + " " + data['customer_name'] + " Your order is placed now. Thanks for your order"
-            email = data['customer_email']
-            recipient_list = [email]
-            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True) 
-            serializer.save()
-
-            return Response({
-                'data': serializer.data,
-                'message': "New order is created or Placed"
-            }, status= status.HTTP_201_CREATED)
-
-        except:
-            return Response({
-                'date': {},
-                'message': "Something went wrong in creation of Order"
-            }, status= status.HTTP_400_BAD_REQUEST)
