@@ -13,6 +13,10 @@ from django.conf import settings
 import uuid
 from django.db.models import Q
 from django.core.mail import send_mail
+from nerdcoudstore.settings import EMAIL_HOST_USER
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
 
 def index(request):
     productos = Producto.objects.all()[:3]
@@ -56,7 +60,14 @@ def signup(request):
                 apellido = aux_user.last_name,
                 correo = aux_user.email,        
             )
+            
+            subject = "Usuario Creado" 
+            message = "Estimado/Estimada" + " " + aux_user.username + ", su cuenta de NerdCoudStore ha sido creada."
+            email = aux_user.email
+            recipient_list = [email]
+            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True) 
             usuario.save()
+
             user = authenticate(username=formulario.cleaned_data['username'], password=formulario.cleaned_data['password1'])
             login(request, user)
             messages.success(request,"cuenta creada correctamente")
@@ -254,3 +265,33 @@ def agregarForo(request):
             print("formulario no valido")
             data["form"] = formulario
     return render(request, 'foro/agregarForo.html',data)
+
+
+def post(self, request):
+        try:
+            data = request.data
+            serializer = OrderSerializer(data=data)  
+
+            if not serializer.is_valid():
+                return Response({
+                'data': serializer.errors,
+                'message': "Something went wrong"
+            }, status= status.HTTP_400_BAD_REQUEST)
+
+            subject = "New Order is Placed" 
+            message = "Dear Customer" + " " + data['customer_name'] + " Your order is placed now. Thanks for your order"
+            email = data['customer_email']
+            recipient_list = [email]
+            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True) 
+            serializer.save()
+
+            return Response({
+                'data': serializer.data,
+                'message': "New order is created or Placed"
+            }, status= status.HTTP_201_CREATED)
+
+        except:
+            return Response({
+                'date': {},
+                'message': "Something went wrong in creation of Order"
+            }, status= status.HTTP_400_BAD_REQUEST)

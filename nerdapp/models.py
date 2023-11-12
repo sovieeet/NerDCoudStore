@@ -120,7 +120,7 @@ class CarritoProducto(models.Model):
     id_carrito_id = models.ForeignKey(Carrito, null=False, blank=False, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id_carrito_producto
+        return str(self.id_carrito_producto)
     
 class Venta(models.Model):
     id_venta = models.AutoField(primary_key=True)
@@ -129,4 +129,4 @@ class Venta(models.Model):
     fecha_venta = models.DateField()
 
     def __str__(self):
-        return self.id_venta
+        return str(self.id_venta)
