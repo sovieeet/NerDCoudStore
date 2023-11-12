@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from .models import *
 #from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta, Publicacion
-from .forms import CustomUserCreationForm, SubastaForm, ParticiparSubastaForm, ForoForm
+from .forms import *
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from paypal.standard.forms import PayPalPaymentsForm
@@ -201,7 +201,7 @@ def enviar_correo(subasta):
     recipient_list = [subasta.usuario_id_usuario_id.correo]  # Dirección de correo del usuario que ganó la subasta
 
     send_mail(subject, message, from_email, recipient_list)
-"""
+
 
 def listForo(request):
     publicaciones = Publicacion.objects.all()
@@ -211,7 +211,35 @@ def listForo(request):
             'comentarios': comentarios
         }
     return render(request, 'foro/listForo.html', context)
+    """
 
+class listarYComentarForo(View):
+    def get(self, request, *args, **kwargs):
+        publicaciones = Publicacion.objects.all().order_by('-fecha_publicacion')
+        comentarios = Comentario.objects.all().order_by('-fecha_comentario')
+        context = {
+                'publicaciones': publicaciones,
+                'comentarios': comentarios
+            }
+        return render(request, 'foro/listForo.html', context)
+    def post(self, request, *args, **kwargs):
+        formulario = ComentarForo(data=request.POST, files=request.FILES)
+        foro= request.POST.get('publicacion_id_publicacion')
+        print(foro)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect(reverse('participacionForo', args=[foro]))
+        
+def participacionForo(request, id_publicacion):
+    print("Foro:", id_publicacion)
+    try:
+        foro = Publicacion.objects.get(id_publicacion=id_publicacion)
+        context = {
+            'foro': foro.titulo_publicacion,
+        }
+        return render(request, 'foro/participacionForo.html', context)
+    except Publicacion.DoesNotExist:
+        return HttpResponse("Foro no encontrado.")
 def agregarForo(request):
     data = {'form': ForoForm()}
     if request.method =="POST":

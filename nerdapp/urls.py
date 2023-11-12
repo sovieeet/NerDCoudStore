@@ -9,11 +9,12 @@ urlpatterns = [
     path('listSubastas/', views.ListarYParticiparSubastas.as_view(), name='listSubastas'),
     path('agregarSubasta/', views.agregarSubasta, name='agregarSubasta'),
     path('participacionSubasta/<int:subasta_id>/<int:monto>/', views.participacionSubasta, name='participacionSubasta'),
+    path('participacionForo/<int:id_publicacion>/', views.participacionForo, name='participacionForo'),
     path('checkout/<int:id_producto>/', views.CheckOut, name='checkout'),
     path('payment-success/<int:id_producto>/', views.PaymentSuccessful, name='payment-success'),
     path('payment-failed/<int:id_producto>/', views.paymentFailed, name='payment-failed'),
     path('products/', views.ProductView, name='products'),
-    path('listForo/', views.listForo, name='listForo'),
+    path('listForo/', views.listarYComentarForo.as_view(), name='listForo'),
     path('agregarForo/', views.agregarForo, name='agregarForo'),
 
 ]

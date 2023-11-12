@@ -96,7 +96,7 @@ class Publicacion(models.Model):
 class Comentario(models.Model):
     id_comentario = models.AutoField(primary_key=True)
     comentario = models.CharField(max_length=200)
-    fecha_comentario = models.DateField()
+    fecha_comentario = models.DateField(auto_now_add=True)
     estado_comentario = models.CharField(max_length=200)
     usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
     publicacion_id_publicacion = models.ForeignKey(Publicacion, null=False, blank=False, on_delete=models.CASCADE)

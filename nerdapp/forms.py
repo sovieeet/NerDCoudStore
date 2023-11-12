@@ -4,8 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views import View
-from .models import Subasta, ParticiparSubasta, Usuario, Publicacion
-
+from .models import *
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -49,3 +48,9 @@ class ForoForm(forms.models.ModelForm):
             "usuario_id_usuario": forms.HiddenInput(),
         }
         
+class ComentarForo(forms.models.ModelForm):
+    class Meta:
+        db_table = "nerdapp_comentario"
+        model= Comentario
+        fields="__all__"
+    

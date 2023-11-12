@@ -49,19 +49,42 @@
 				{{ p.descripcion_publicacion}}
 				<br><br>
 
-				<small><small><i>Respuestas de Usuarios</i></small></small>
 				<div style="text-align: start; overflow-y:scroll;
         overflow-x:hidden; height:200px">
+
+					<small><small><i>Responder</i></small></small>
+					<form method="post" enctype="multipart/form-data">
+						{% load crispy_forms_tags %} {% csrf_token %}
+						<div class="row">
+							<div class="col-11">
+								<input class="form-control me-2" type="text" style="margin: 1%" id="comentario"
+									name="comentario" required />
+							</div>
+							<div class="col" style=" text-align: start; margin: auto;">
+								<button type="submit"><i class="i bi-send"
+										style="color: #545f71; margin: 1%;"></i></button>
+							</div>
+							<input type="hidden" id="usuario_id_usuario" name="usuario_id_usuario"
+								value="{{ user.id }}" />
+							<input type="hidden" id="estado_comentario" name="estado_comentario" value="activo" />
+							<input type="hidden" id="publicacion_id_publicacion" name="publicacion_id_publicacion"
+								value="{{p.id_publicacion}}" />
+						</div>
+					</form>
+					<small><small><i>Respuestas de Usuarios</i></small></small>
 					{% for c in comentarios %}
 					{% if c.publicacion_id_publicacion.id_publicacion == p.id_publicacion %}
 
 					<div class="row" style="background-color: #6264eb21;
 											border: 1px solid #ddd;border-radius: 5px; padding: 2%;
-											width: 90%; margin-bottom: 1%;">
+											width: 95%; margin-bottom: 1%;">
 						<div class=" col-2" style="background-color: #6264eb21; padding: 1%; text-align: center
 						; border-radius: 20px;">
 							{{c.usuario_id_usuario.nombre_usuario}}</div>
-						<div class=" col-8" style="border-left: 1px solid #6264eb21; margin: 1%;">{{ c.comentario }}
+						<div class=" col" style="border-left: 1px solid #6264eb21; margin: 1%;">{{ c.comentario }}
+						</div>
+						<div class=" col-1" style="border-left: 1px solid #6264eb21; margin: 1%;">
+							<small><small>{{c.fecha_comentario}}</small></small>
 						</div>
 					</div>
 					{% endif %}
