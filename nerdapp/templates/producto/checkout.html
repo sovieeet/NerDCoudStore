@@ -1,0 +1,51 @@
+{% extends 'nerdapp/base.html' %} {% block title %}Index{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}
+
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout page</title>
+</head>
+
+<body>
+    <div style="width: 90%; background-color: #6264eb21;border: 1px solid #ddd;
+	border-radius: 5px; margin: auto; ">
+        <div class="row" style="padding: 5%;">
+            <div class="col-3">
+                {% if productos.imagen %}
+                <img src="{{ productos.imagen.url }}" alt="img product" style="width: 100%;" />
+                {% endif %}
+            </div>
+            <div class="col-8">
+                <h1 class=" text-subtitulo" style="text-align: left"">{{productos.nombre}}</h1>
+                <div class=" product-container">
+                    <div class="productos">
+                        <img class="img" src="{{productos.imagen}}" alt="">
+                        <p>{{productos.nombre}}</p>
+                        <p>Descripción: <br>{{productos.descripcion}}</p>
+
+                        <h1>$ {{productos.precio}}</h1>
+                        <!-- <button>Purchase</button> -->
+
+                    </div>
+            </div>
+            <div class="row" style="text-align: end;">
+                <div class="col-8">
+                    <h2><i class="bi bi-cart-plus" style="color: #545f71"></i></h2>
+                </div>
+                <div class="col-4">{{paypal.render}}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+
+</body>
+
+</html>
+{% endblock contenido %}

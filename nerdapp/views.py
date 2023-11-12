@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.core.mail import send_mail
 
 def index(request):
-    productos = Producto.objects.all()
+    productos = Producto.objects.all()[:3]
 
     data = {
         'productos': productos
@@ -180,7 +180,7 @@ def CheckOut(request, id_producto):
         'paypal': paypal_payment
     }
 
-    return render(request, 'nerdapp/checkout.html', context)
+    return render(request, 'producto/checkout.html', context)
 
 def PaymentSuccessful(request, id_producto):
 
