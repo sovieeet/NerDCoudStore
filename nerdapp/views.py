@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.core.mail import send_mail
 
 def index(request):
-    productos = Producto.objects.all()[:3]
+    productos = Producto.objects.all().order_by("-fecha_creacion")[:3]
 
     data = {
         'productos': productos
