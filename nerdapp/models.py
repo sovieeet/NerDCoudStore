@@ -13,6 +13,7 @@ class Producto(models.Model):
     descripcion = models.CharField()
     precio = models.IntegerField(default=0)
     cantidad_disponible = models.IntegerField(default=0)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
     imagen = models.ImageField(upload_to="productos", null=True)
     
     def __str__(self):
@@ -63,16 +64,6 @@ class Subasta(models.Model):
     def __str__(self):
         return self.nombre
 
-class Carrito(models.Model):
-    id_carrito = models.AutoField(primary_key=True)
-    fecha_compra = models.DateField()
-    total_venta = models.IntegerField()
-    iva = models.IntegerField()
-    usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.id_carrito
-
 class Usuario_subasta(models.Model):
     id_usuario_subasta = models.AutoField(primary_key=True)
     usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
@@ -91,7 +82,6 @@ class Publicacion(models.Model):
 
     def _str_(self):
         return self.titulo_publicacion
-
 
 class Comentario(models.Model):
     id_comentario = models.AutoField(primary_key=True)
@@ -112,3 +102,31 @@ class ParticiparSubasta(models.Model):
 
     def __str__(self):
         return str(self.id_participacion)
+    
+class Carrito(models.Model):
+    id_carrito = models.AutoField(primary_key=True)
+    usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
+    estado_pago = models.CharField(max_length=200)
+    total_carrito = models.IntegerField()
+
+    def __str__(self):
+        return self.id_carrito
+
+class CarritoProducto(models.Model):
+    id_carrito_producto = models.AutoField(primary_key=True)
+    id_producto_id = models.ForeignKey(Producto, null=False, blank=False, on_delete=models.CASCADE)
+    cantidad_producto = models.IntegerField()
+    total_por_producto = models.IntegerField()
+    id_carrito_id = models.ForeignKey(Carrito, null=False, blank=False, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.id_carrito_producto
+    
+class Venta(models.Model):
+    id_venta = models.AutoField(primary_key=True)
+    id_carrito_id = models.ForeignKey(Carrito, null=False, blank=False, on_delete=models.CASCADE)
+    total_venta = models.IntegerField()
+    fecha_venta = models.DateField()
+
+    def __str__(self):
+        return self.id_venta
