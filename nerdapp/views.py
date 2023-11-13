@@ -308,8 +308,8 @@ def agregarForo(request):
             usuario = request.user
 
             # Envía un correo de confirmación
-            subject = "Foro Agregado Exitosamente"
-            message = f"Estimado/a {usuario.username}, su foro ha sido agregado exitosamente." 
+            subject = "Foro Creado Exitosamente"
+            message = f"Estimado/a {usuario.username}, su foro ha sido creado exitosamente." 
             email = usuario.email
             recipient_list = [email]
 
