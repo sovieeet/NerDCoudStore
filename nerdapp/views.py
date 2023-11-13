@@ -225,7 +225,7 @@ def PaymentSuccessful(request, id_producto):
     email = usuario.correo
     recipient_list = [email]
 
-    html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma" style="width: 100%">
+    html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma">
     <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
 
     send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
@@ -242,7 +242,7 @@ def paymentFailed(request, id_producto):
     email = usuario.correo
     recipient_list = [email]
 
-    html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma" style="width: 100%">
+    html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma">
     <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
 
     send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
