@@ -137,6 +137,21 @@ class ListarYParticiparSubastas(View):
             )
             participarSubastaUsuario.save()
             subastaClass.precio_mas_alto = montoS
+
+            subject = "Participación en Subasta Exitosa"
+            message = f"Estimado/a {usuarioClass.nombre_usuario}, su participación en la subasta '{subastaClass.nombre}' ha sido exitosa."
+            email = usuarioClass.correo
+            recipient_list = [email]
+
+            html_message = f"""
+            <p>{message}</p>
+            <p>Ha ofertado con éxito en la subasta. El monto de su oferta es de ${montoS} CLP.</p>
+            <img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma">
+            <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>
+            """
+
+            send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+            
             subastaClass.save()
             return redirect(reverse('participacionSubasta', args=[subasta, montoS]))
         elif  int(montoS) < int(subastaClass.precio_inicial) :
@@ -202,15 +217,37 @@ def CheckOut(request, id_producto):
 
 def PaymentSuccessful(request, id_producto):
 
-    productos = Producto.objects.get(id_producto=id_producto)
+    producto = Producto.objects.get(id_producto=id_producto)
+    usuario = request.user
 
-    return render(request, 'nerdapp/payment-success.html', {'productos': productos})
+    subject = "Compra Exitosa"
+    message = f"Estimado/a {usuario.nombre_usuario}, ¡su compra de {producto.nombre} ha sido exitosa!"
+    email = usuario.correo
+    recipient_list = [email]
+
+    html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma" style="width: 100%">
+    <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
+
+    send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+
+    return render(request, 'nerdapp/payment-success.html', {'productos': producto})
 
 def paymentFailed(request, id_producto):
 
-    productos = Producto.objects.get(id_producto=id_producto)
+    producto = Producto.objects.get(id_producto=id_producto)
+    usuario = request.user
 
-    return render(request, 'nerdapp/payment-failed.html', {'productos': productos})
+    subject = "Compra fallida"
+    message = f"Estimado/a {usuario.nombre_usuario}, su compra de {producto.nombre} no se ha completado"
+    email = usuario.correo
+    recipient_list = [email]
+
+    html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma" style="width: 100%">
+    <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
+
+    send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+
+    return render(request, 'nerdapp/payment-failed.html', {'productos': producto})
 """
 def enviar_correo(subasta):
     subject = 'Subasta finalizada'
@@ -258,6 +295,7 @@ def participacionForo(request, id_publicacion):
         return render(request, 'foro/participacionForo.html', context)
     except Publicacion.DoesNotExist:
         return HttpResponse("Foro no encontrado.")
+    
 def agregarForo(request):
     data = {'form': ForoForm()}
     if request.method =="POST":
@@ -265,10 +303,30 @@ def agregarForo(request):
         print(formulario)
         if formulario.is_valid():
             print("formulario valido")
+
+            # Obtener el usuario actual
+            usuario = request.user
+
+            # Envía un correo de confirmación
+            subject = "Foro Agregado Exitosamente"
+            message = f"Estimado/a {usuario.username}, su foro ha sido agregado exitosamente." 
+            email = usuario.email
+            recipient_list = [email]
+
+            html_message = f"""
+            <p>{message}</p>
+            <img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma" style="width: 100%">
+            <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>
+            """
+
+            send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+
+            data['mensaje'] = "Guardado correctamente"
+
             formulario.save()
-            #usuario = Usuario.objects.get(id_usuario=request.user.id)  # Obtiene el usuario actual
+        #usuario = Usuario.objects.get(id_usuario=request.user.id)  # Obtiene el usuario actual
             data['mensaje']="guardado correctamente"
         else:
             print("formulario no valido")
-            data["form"] = formulario
-    return render(request, 'foro/agregarForo.html',data)
+        data["form"] = formulario
+        return render(request, 'foro/agregarForo.html',data)
