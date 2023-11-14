@@ -73,6 +73,9 @@
 						</li>
 						{% if user.is_authenticated %}
 						<li class="nav-item m-auto">
+							<a href="{% url 'vistaBoleta' %}" class="navbar-brand">Mis compras</a>
+						</li>
+						<li class="nav-item m-auto">
 							<a href="{% url 'logout' %}" class="navbar-brand">Cerrar sesión</a>
 						</li>
 						<li class="text-subtitulo m-auto" style="color: #fcfcfc">

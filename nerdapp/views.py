@@ -475,3 +475,9 @@ def descargar_excel(request):
 
     return response
 
+def vistaBoleta(request):
+    
+    context = {
+        "texto":"hola"
+    }
+    return render(request, 'informe/vistaBoleta.html', context)
