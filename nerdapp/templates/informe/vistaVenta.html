@@ -1,9 +1,11 @@
-{% extends "nerdapp/base.html" %} {% block contenido %}
-{% load static %}
+{% extends 'nerdapp/base.html' %} {% block title %}Informes{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}
+
 <div class="row">
     <div class="col-sm-12 col-md">
         <h2 class="text-subtitulo" style="text-align: left">Informe ventas mes</h2>
     </div>
+
     <div class="col-sm-6 col-md-2">
         <a href="{% url 'descargar_pdf' %}" style="text-decoration: none;">Descargar PDF</a>
     </div>
@@ -33,7 +35,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for id, nombre, cantidad in diccIdNombreCant %}
+            {% for id, nombre, cantidad, precio, total in diccIdNombreCant %}
             <tr>
                 <td>{{ id }}</td>
                 <td>{{ nombre }}</td>
@@ -42,6 +44,9 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+<div class="col-sm-12 col-md-2">
+    <h2 class="text-subtitulo" style="text-align: left">Total vendido :<br> $ {{totalVentaMes |intcomma }} </h2>
 </div>
 
 <!--<div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mx-auto">

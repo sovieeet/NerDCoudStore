@@ -17,6 +17,13 @@ from random import randrange
 from django.db.models import Sum
 from datetime import datetime
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+import locale
+
+
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 
@@ -242,10 +249,13 @@ def agregarForo(request):
 
 def vistaVenta(request):
     diccAlias, diccNombre = diccProductos()
-    diccIdNombreCant = [(str(id), nombre, cantidad) for id, nombre, cantidad in diccNombre]
-
+    diccIdNombreCant = [(str(id), nombre, cantidad, precio, total) for id, nombre, cantidad, precio, total in diccNombre]
+    totalVentas = 0
+    for t in diccIdNombreCant:
+        totalVentas=totalVentas+t[4]
     context = {
         'diccIdNombreCant': diccIdNombreCant,
+        'totalVentaMes':totalVentas
     }
 
     return render(request, 'informe/vistaVenta.html', context)
@@ -332,7 +342,7 @@ def diccProductos():
         id,alias=key.split("-", 1)
         producto = Producto.objects.get(id_producto=id)
         #print('producto ',producto)
-        MatAux.append([id,producto.nombre,value])
+        MatAux.append([id,producto.nombre,value,producto.precio, value*producto.precio])
     #print(MatAux)
     diccionario_Nombres=MatAux
     #diccionario_Nombres = dict(sorted(diccNombres.items(), key=lambda item: item[1], reverse=True))
@@ -343,21 +353,29 @@ def diccProductos():
 
 def descargar_pdf(request):
     diccAlias, diccNombre = diccProductos()
+    now = datetime.now()
+    current_month =str(now.month) 
+    current_year = str(now.year)
+    fn="informe_ventas_"+current_month+"_"+current_year+".pdf"
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="informe_ventas.pdf"'
+    response['Content-Disposition'] = f'attachment; filename="{fn}"'
 
     # Crear el objeto PDF usando reportlab
-    p = canvas.Canvas(response)
-    p.drawString(100, 800, "Informe de Ventas")
-    p.drawString(100, 780, "ID | Nombre | Cantidad")
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    styles = getSampleStyleSheet()
 
-    y = 760
-    for id, nombre, cantidad in diccNombre:
-        p.drawString(100, y, f"{id} | {nombre} | {cantidad}")
-        y -= 20
+    # Crear la tabla y definir estilos
+    data = [['ID', 'Nombre', 'Cantidad', 'Precio unitario', 'Total Vendido']] + diccNombre
+    table_style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                              ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                              ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                              ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                              ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                              ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                              ('GRID', (0, 0), (-1, -1), 1, colors.black)])
 
-    p.showPage()
-    p.save()
+    table = Table(data, style=table_style)
+    doc.build([Paragraph("Informe de Ventas "+current_month+" / "+current_year, styles['Title']), table])
 
     return response
 
@@ -371,11 +389,11 @@ def descargar_excel(request):
     ws = wb.active
 
     # Agregar encabezados
-    ws.append(['ID', 'Nombre', 'Cantidad'])
+    ws.append(['ID', 'Nombre', 'Cantidad', 'Precio unitario', 'Total Vendido'])
 
     # Agregar datos
-    for id, nombre, cantidad in diccNombre:
-        ws.append([id, nombre, cantidad])
+    for id, nombre, cantidad, precio, total in diccNombre:
+        ws.append([id, nombre, cantidad, precio, total])
 
     # Guardar el libro de trabajo
     wb.save(response)
