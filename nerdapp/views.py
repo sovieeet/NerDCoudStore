@@ -239,21 +239,13 @@ def agregarForo(request):
 
 def vistaVenta(request):
     diccAlias, diccNombre = diccProductos()
-    diccC = {}
-    diccI = {}
+    diccIdNombreCant = [(str(id), nombre, cantidad) for id, nombre, cantidad in diccNombre]
 
-    for key, value in diccNombre.items():
-        id_producto, nombre_producto = key.split("|", 1)
-        diccI[nombre_producto] = id_producto
-        diccC[nombre_producto] = value
-    print(diccC)
     context = {
-        'diccIdNombre': diccI,
-        'diccCantNombre': diccC
+        'diccIdNombreCant': diccIdNombreCant,
     }
 
     return render(request, 'informe/vistaVenta.html', context)
-
 
 def get_chart(request):
     diccAlias,diccNombre = diccProductos()
@@ -319,6 +311,7 @@ def diccProductos():
     ).values()
     diccProductos ={str(producto['id_producto'])+"-"+producto['nombre'][:5]: 0 for producto in productos}
     diccNombres = {str(producto['id_producto'])+"|"+producto['nombre']: 0 for producto in productos}
+    #diccNombres=[]
     for venta in ventas_por_mes:
         for carpro in lisCarritoProductos:
             if venta['id_carrito_id_id'] == carpro['id_carrito_id_id']:
@@ -326,10 +319,21 @@ def diccProductos():
                     id_producto=carpro['id_producto_id_id']
                 ).values()[0]
                 diccProductos.update({str(producto['id_producto'])+"-"+producto['nombre'][:5]:diccProductos[str(producto['id_producto'])+"-"+producto['nombre'][:5]]+int(carpro['cantidad_producto'])})
+                #diccNombres.append(producto['id_producto'],producto['nombre'],)
                 diccNombres.update({str(producto['id_producto'])+"|"+producto['nombre']:diccNombres[str(producto['id_producto'])+"|"+producto['nombre']]+int(carpro['cantidad_producto'])})
+        #diccNombres.append([producto['id_producto'],producto['nombre'],diccProductos[producto['nombre']]])
+    #print(diccNombres)
     diccionario_ordenado = dict(sorted(diccProductos.items(), key=lambda item: item[1], reverse=True))
-    diccionario_Nombres = dict(sorted(diccNombres.items(), key=lambda item: item[1], reverse=True))
-    
+    MatAux=[] 
+    for key,value in diccionario_ordenado.items():
+        id,alias=key.split("-", 1)
+        producto = Producto.objects.get(id_producto=id)
+        #print('producto ',producto)
+        MatAux.append([id,producto.nombre,value])
+    print(MatAux)
+    diccionario_Nombres=MatAux
+    #diccionario_Nombres = dict(sorted(diccNombres.items(), key=lambda item: item[1], reverse=True))
+    #diccionario_Nombres = diccNombres
     #print(diccionario_Nombres)
     #{'3-Cojín': 2, '6-Manta': 1, '2-Tazón': 0, '4-Nicke': 0}
     return (diccionario_ordenado,diccionario_Nombres)
