@@ -481,3 +481,32 @@ def vistaBoleta(request):
         "texto":"hola"
     }
     return render(request, 'informe/vistaBoleta.html', context)
+
+def videojuegos(request):
+
+    productos_videojuegos = Producto.objects.filter(categoria_id_categoria='1')
+
+
+    return render(request, 'nerdapp/videojuegos.html', {'productos': productos_videojuegos})
+
+def mangas(request):
+
+    productos_mangas = Producto.objects.filter(categoria_id_categoria='2')
+
+
+    return render(request, 'nerdapp/mangas.html', {'productos': productos_mangas})
+
+def animes(request):
+
+    productos_animes = Producto.objects.filter(categoria_id_categoria='3')
+
+
+    return render(request, 'nerdapp/animes.html', {'productos': productos_animes})
+
+
+def accesorios(request):
+
+    productos_accesorios = Producto.objects.filter(categoria_id_categoria='4')
+
+
+    return render(request, 'nerdapp/accesorios.html', {'productos': productos_accesorios})

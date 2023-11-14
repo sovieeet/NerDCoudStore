@@ -15,7 +15,8 @@ class Producto(models.Model):
     cantidad_disponible = models.IntegerField(default=0)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     imagen = models.ImageField(upload_to="productos", null=True)
-    
+    categoria_id_categoria = models.ForeignKey(Categoria, null=False,  blank=False, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.nombre
      

@@ -23,7 +23,7 @@ urlpatterns = [
     path('listForo/', views.listarYComentarForo.as_view(), name='listForo'),
     path('agregarForo/', views.agregarForo, name='agregarForo'),
     path('vistaBoleta/', views.vistaBoleta, name='vistaBoleta'),
-
+    path('videojuegos/', views.videojuegos, name='videojuegos'),
 ]
 
 if settings.DEBUG:
