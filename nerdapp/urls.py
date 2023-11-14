@@ -22,6 +22,7 @@ urlpatterns = [
     path('products/', views.ProductView, name='products'),
     path('listForo/', views.listarYComentarForo.as_view(), name='listForo'),
     path('agregarForo/', views.agregarForo, name='agregarForo'),
+    path('vistaBoleta/', views.vistaBoleta, name='vistaBoleta'),
 
 ]
 
