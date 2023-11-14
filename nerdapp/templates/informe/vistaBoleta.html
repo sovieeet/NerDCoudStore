@@ -1,8 +1,91 @@
-{% extends 'nerdapp/base.html' %} {% block title %}Informes{% endblock title %}
-{%block contenido %} {% load humanize %} {% load static %}
+{% extends 'nerdapp/base.html' %}
+
+{% block title %}Informes{% endblock title %}
+
+{% block contenido %}
+{% load humanize %}
+{% load static %}
 
 <div class="row">
-    vista boleta
-    {{texto}}
+    <div class="row">
+        <div class="col">
+            <h2>Vista de Boletas</h2>
+        </div>
+        <div class="col" style="text-align: end;">
+            <div class="row"><a href="{% url 'descargar_boletas_excel'%}" title="Descargar Excel"
+                    style="text-decoration: none; color: #545f71;">
+                    <div class="col" style="text-decoration: none;">
+                        <p>Descarga Historial
+                            <i class="bi bi-file-earmark-arrow-down" style="color: #545f71; margin: auto;"></i>
+                        </p>
+
+                    </div>
+            </div>
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+{% for ventaProducto in listaVentaProducto %}
+
+<div class="card" style="margin-top: 1%;">
+    <div class="card-title" style="margin-top: 1%;">
+        <div class="row">
+            <div class="col-sm-12 col-md">
+                <h4>Detalle de Venta</h4>
+            </div>
+            <div class="col-sm-12 col-md" style="visibility: hidden;">
+                <p>ID Carrito: {{ ventaProducto.0.4 }}</p>
+            </div>
+            <div class="col-sm-12 col-md">
+                <p>Número Boleta: {{ ventaProducto.0.5 }}</p>
+            </div>
+            <div class="col-sm-12 col-md">
+                <p>Fecha Venta: {{ ventaProducto.0.6 }}</p>
+            </div>
+            <div class="col-sm-12 col-md">
+                <p>Total Venta: {{ ventaProducto.0.7 }}</p>
+            </div>
+            <div class="col-sm-12 col-md-1" style="text-align: center;">
+                <a href="{% url 'descargar_boleta_pdf' ventaProducto.0.4 %}" title="Descargar PDF">
+                    <h3><i class="bi bi-file-earmark-arrow-down" style="color: #545f71; margin: auto;">
+
+                        </i></h3>
+                </a>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="card-boddy">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio Unitario</th>
+                    <th>Cantidad</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for productoInfo in ventaProducto %}
+                <tr>
+                    <td>{{ productoInfo.0 }}</td>
+                    <td>{{ productoInfo.1 }}</td>
+                    <td>{{ productoInfo.2 }}</td>
+                    <td>{{ productoInfo.3 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+{% endfor %}
 </div>
 {% endblock contenido %}
