@@ -51,18 +51,21 @@
 							<a href="{% url 'vistaVenta' %}" class="navbar-brand">Informe</a>
 						</li>
 						<li class="nav-item m-auto">
-							<a href="" class="navbar-brand">Productos</a>
+							<a href="" class="navbar-brand">Videojuegos</a>
 						</li>
 
 						{% else %}
 						<li class="nav-item m-auto">
-							<a href="" class="navbar-brand">Video Juegos</a>
+							<a href="{% url 'videojuegos' %}" class="navbar-brand">VideoJuegos</a>
 						</li>
 						<li class="nav-item m-auto">
-							<a href="" class="navbar-brand">Mangas</a>
+							<a href="{% url 'mangas' %}" class="navbar-brand">Mangas</a>
 						</li>
 						<li class="nav-item m-auto">
-							<a href="" class="navbar-brand">Accesorios</a>
+							<a href="{% url 'animes' %}" class="navbar-brand">Animes</a>
+						</li>
+						<li class="nav-item m-auto">
+							<a href="{% url 'accesorios' %}" class="navbar-brand">Accesorios</a>
 						</li>
 						{% endif %}
 						<li class="nav-item m-auto">
@@ -72,6 +75,9 @@
 							<a href="{% url 'listSubastas' %}" class="navbar-brand">Subastas</a>
 						</li>
 						{% if user.is_authenticated %}
+						<li class="nav-item m-auto">
+							<a href="{% url 'vistaBoleta' %}" class="navbar-brand">Mis compras</a>
+						</li>
 						<li class="nav-item m-auto">
 							<a href="{% url 'logout' %}" class="navbar-brand">Cerrar sesión</a>
 						</li>
