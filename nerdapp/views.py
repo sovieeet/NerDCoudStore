@@ -16,6 +16,9 @@ from django.core.mail import send_mass_mail
 from random import randrange
 from django.db.models import Sum
 from datetime import datetime
+from reportlab.pdfgen import canvas
+from openpyxl import Workbook
+from openpyxl.utils import get_column_letter
 
 def index(request):
     productos = Producto.objects.all().order_by("-fecha_creacion")[:3]
@@ -34,7 +37,7 @@ def testPaypal(request):
 
 def lista_categorias(request):
     categorias = Categoria.objects.all()
-    print(categorias)
+    #print(categorias)
     return render(request, 'nerdapp/lista_categorias.html', {'categorias': categorias})
 
 def listForo(request):
@@ -105,11 +108,11 @@ class ListarYParticiparSubastas(View):
         subasta = request.POST.get('subasta_id')
         montoS = request.POST.get('monto')
         subastaClass = Subasta.objects.get(id_subasta=subasta)
-        print("Usuario:", usuario)
+        """print("Usuario:", usuario)
         print("Subasta:", subasta)
         print("precio_inicial:", subastaClass.precio_inicial)
         print("precio_mas_alto:", subastaClass.precio_mas_alto)
-        print("Monto:", montoS)
+        print("Monto:", montoS)"""
         if formulario.is_valid and int(montoS) > int(subastaClass.precio_inicial) and int(montoS) >  int(subastaClass.precio_mas_alto) :
             usuarioClass = Usuario.objects.get(id_usuario=request.user.id)      
             participarSubastaUsuario = ParticiparSubasta.objects.create(
@@ -129,8 +132,8 @@ class ListarYParticiparSubastas(View):
         return render(request, 'subasta/listSubastas.html', context)
 
 def participacionSubasta(request, subasta_id, monto):
-    print("Subasta:", subasta_id)
-    print("Monto:", monto)
+    #print("Subasta:", subasta_id)
+    #print("Monto:", monto)
     try:
         subasta = Subasta.objects.get(id_subasta=subasta_id)
         context = {
@@ -206,13 +209,13 @@ class listarYComentarForo(View):
     def post(self, request, *args, **kwargs):
         formulario = ComentarForo(data=request.POST, files=request.FILES)
         foro= request.POST.get('publicacion_id_publicacion')
-        print(foro)
+        #print(foro)
         if formulario.is_valid():
             formulario.save()
             return redirect(reverse('participacionForo', args=[foro]))
         
 def participacionForo(request, id_publicacion):
-    print("Foro:", id_publicacion)
+    #print("Foro:", id_publicacion)
     try:
         foro = Publicacion.objects.get(id_publicacion=id_publicacion)
         context = {
@@ -226,14 +229,14 @@ def agregarForo(request):
     data = {'form': ForoForm()}
     if request.method =="POST":
         formulario = ForoForm(data=request.POST, files=request.FILES)
-        print(formulario)
+        #print(formulario)
         if formulario.is_valid():
-            print("formulario valido")
+            #print("formulario valido")
             formulario.save()
             #usuario = Usuario.objects.get(id_usuario=request.user.id)  # Obtiene el usuario actual
             data['mensaje']="guardado correctamente"
         else:
-            print("formulario no valido")
+            #print("formulario no valido")
             data["form"] = formulario
     return render(request, 'foro/agregarForo.html',data)
 
@@ -330,10 +333,51 @@ def diccProductos():
         producto = Producto.objects.get(id_producto=id)
         #print('producto ',producto)
         MatAux.append([id,producto.nombre,value])
-    print(MatAux)
+    #print(MatAux)
     diccionario_Nombres=MatAux
     #diccionario_Nombres = dict(sorted(diccNombres.items(), key=lambda item: item[1], reverse=True))
     #diccionario_Nombres = diccNombres
     #print(diccionario_Nombres)
     #{'3-Cojín': 2, '6-Manta': 1, '2-Tazón': 0, '4-Nicke': 0}
     return (diccionario_ordenado,diccionario_Nombres)
+
+def descargar_pdf(request):
+    diccAlias, diccNombre = diccProductos()
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="informe_ventas.pdf"'
+
+    # Crear el objeto PDF usando reportlab
+    p = canvas.Canvas(response)
+    p.drawString(100, 800, "Informe de Ventas")
+    p.drawString(100, 780, "ID | Nombre | Cantidad")
+
+    y = 760
+    for id, nombre, cantidad in diccNombre:
+        p.drawString(100, y, f"{id} | {nombre} | {cantidad}")
+        y -= 20
+
+    p.showPage()
+    p.save()
+
+    return response
+
+def descargar_excel(request):
+    diccAlias, diccNombre = diccProductos()
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="informe_ventas.xlsx"'
+
+    # Crear el objeto Excel usando openpyxl
+    wb = Workbook()
+    ws = wb.active
+
+    # Agregar encabezados
+    ws.append(['ID', 'Nombre', 'Cantidad'])
+
+    # Agregar datos
+    for id, nombre, cantidad in diccNombre:
+        ws.append([id, nombre, cantidad])
+
+    # Guardar el libro de trabajo
+    wb.save(response)
+
+    return response

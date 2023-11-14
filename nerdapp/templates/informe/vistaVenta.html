@@ -1,11 +1,16 @@
 {% extends "nerdapp/base.html" %} {% block contenido %}
 {% load static %}
 <div class="row">
-    <div class="col-sm-12 col-md" style="background-color: antiquewhite;">
+    <div class="col-sm-12 col-md">
         <h2 class="text-subtitulo" style="text-align: left">Informe ventas mes</h2>
     </div>
-    <div class="col-sm-6 col-md-2" style="background-color: red;">Descargar PDF</div>
-    <div class="col-sm-6 col-md-2" style="background-color: blue;">Descargar Excel</div>
+    <div class="col-sm-6 col-md-2">
+        <a href="{% url 'descargar_pdf' %}" style="text-decoration: none;">Descargar PDF</a>
+    </div>
+    <div class="col-sm-6 col-md-2">
+        <a href="{% url 'descargar_excel' %}" style=" text-decoration: none;">Descargar Excel</a>
+    </div>
+
 </div>
 <div class="row">
     <div class="col-sm-12 col-md-4">
