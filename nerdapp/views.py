@@ -27,7 +27,7 @@ from openpyxl.utils import get_column_letter
 from nerdcoudstore.settings import EMAIL_HOST_USER
 
 def index(request):
-    productos = Producto.objects.all().order_by("-fecha_creacion")[:3]
+    productos = Producto.objects.all().order_by("-fecha_creacion")[:10]
 
     data = {
         'productos': productos

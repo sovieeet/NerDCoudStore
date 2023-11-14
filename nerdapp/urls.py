@@ -26,6 +26,9 @@ urlpatterns = [
     path('descargar_boleta_pdf/<int:boleta_id>/', views.descargarBoleta_pdf, name='descargar_boleta_pdf'),
     path('descargar_boletas_excel/', views.descargarExcelBoletas, name='descargar_boletas_excel'),
     path('videojuegos/', views.videojuegos, name='videojuegos'),
+    path('mangas/', views.mangas, name='mangas'),
+    path('animes/', views.animes, name='animes'),
+    path('accesorios/', views.accesorios, name='accesorios'),
 ]
 
 if settings.DEBUG:
