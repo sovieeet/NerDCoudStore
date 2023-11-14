@@ -3,10 +3,14 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('categorias/', views.lista_categorias, name='lista_categorias'),
-    path('dashboard/', views.dashboard, name='dashboard'),
+    path('vistaVenta/', views.vistaVenta, name='vistaVenta'),
+    path('get_chart/', views.get_chart, name='get_chart'),
+    path('descargar-pdf/', views.descargar_pdf, name='descargar_pdf'),
+    path('descargar-excel/', views.descargar_excel, name='descargar_excel'),
     path('signup/', views.signup, name='signup'),
     path('listSubastas/', views.ListarYParticiparSubastas.as_view(), name='listSubastas'),
     path('agregarSubasta/', views.agregarSubasta, name='agregarSubasta'),

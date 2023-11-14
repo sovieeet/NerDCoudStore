@@ -1,0 +1,55 @@
+{% extends "nerdapp/base.html" %} {% block contenido %}
+{% load static %}
+<div class="row">
+    <div class="col-sm-12 col-md">
+        <h2 class="text-subtitulo" style="text-align: left">Informe ventas mes</h2>
+    </div>
+    <div class="col-sm-6 col-md-2">
+        <a href="{% url 'descargar_pdf' %}" style="text-decoration: none;">Descargar PDF</a>
+    </div>
+    <div class="col-sm-6 col-md-2">
+        <a href="{% url 'descargar_excel' %}" style=" text-decoration: none;">Descargar Excel</a>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-sm-12 col-md-4">
+        <div class="containerGraf inline"">
+            <div class=" item inline-item">
+            <div id="chart" class="chart" style="width: 1000px; height: 300px;"></div>
+        </div>
+    </div>
+
+</div>
+<div class="col"
+    style="background-color: #6264eb21; width: 100%; height: 300px; border-radius: 5px; overflow-y: scroll">
+    <br>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for id, nombre, cantidad in diccIdNombreCant %}
+            <tr>
+                <td>{{ id }}</td>
+                <td>{{ nombre }}</td>
+                <td>{{ cantidad }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!--<div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mx-auto">
+            <div id="chart" class="chart" style="width: 100%; min-height: 400px;"></div>
+        </div>-->
+</div>
+{% endblock contenido %}
+{% block scriptsCode %}
+<script src="{% static 'nerdapp/js/graficoCantidadProductoMes.js' %} " />
+</script>
+{% endblock scriptsCode %}
