@@ -20,7 +20,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-import locale
 
 
 from openpyxl import Workbook
@@ -475,9 +474,101 @@ def descargar_excel(request):
 
     return response
 
+def infoBoletas(id_usuario):
+    carritosUsuario = Carrito.objects.filter(
+        usuario_id_usuario=id_usuario,
+        estado_pago="pagado"
+    ).values()
+    listaVentaProducto=[]
+    for c in carritosUsuario:
+        ventaCarrito = Venta.objects.get(
+            id_carrito_id=c['id_carrito']
+        )
+        d=str(ventaCarrito.fecha_venta.day)
+        m=str(ventaCarrito.fecha_venta.month)
+        y=str(ventaCarrito.fecha_venta.year)
+        fechaVenta = d+'/'+m+'/'+y
+        prodCar = CarritoProducto.objects.filter(
+            id_carrito_id=c['id_carrito']
+        ).values()
+
+        listProductosCarritoUsuario=[]
+        for pc in prodCar:
+            producto = Producto.objects.get(id_producto=pc['id_producto_id_id'])
+            #print(producto.precio)
+
+            listProductosCarritoUsuario.append([producto.nombre, producto.precio,pc['cantidad_producto'],producto.precio*pc['cantidad_producto'],c['id_carrito'],ventaCarrito.id_venta,fechaVenta, ventaCarrito.total_venta])
+        #print(prodCar) #productos de carrito
+        listaVentaProducto.append(listProductosCarritoUsuario)
+    return listaVentaProducto
+
+def descargarBoleta_pdf(request, boleta_id):
+    listaVentaProducto = infoBoletas(request.user.id)
+    now = datetime.now()
+    current_month = str(now.month)
+    current_year = str(now.year)
+    fn = "boleta_" + str(boleta_id) + ".pdf"
+    #print(listaVentaProducto)
+    flattened_data = [item for sublist in listaVentaProducto for item in sublist]
+    dataBoleta = [i[:4] for i in flattened_data]
+    infoBoleta = [i[4:] for i in flattened_data][0]
+    print(infoBoleta)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{fn}"'
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    styles = getSampleStyleSheet()
+
+    # Ajustar el margen entre el subtítulo y la tabla
+    styles.add(ParagraphStyle(name='TableParagraph', parent=styles['Normal'], spaceAfter=12))
+
+    boleta_title = f"Boleta - {infoBoleta[1]}"
+    boleta_subTitle = f"Fecha Venta: {infoBoleta[2]}, Total Venta: {infoBoleta[3]}\n"
+    data = [['Nombre', 'Precio Unitario', 'Cantidad', 'Precio Total']] + dataBoleta
+    table_style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                              ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                              ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                              ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                              ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                              ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                              ('GRID', (0, 0), (-1, -1), 1, colors.black)])
+
+    table = Table(data, style=table_style)
+    doc.build([Paragraph(boleta_title, styles['Title']),
+               Paragraph(boleta_subTitle, styles['TableParagraph']),
+                 table])
+
+    return response   
+
+def descargarExcelBoletas(request):
+    listaVentaProducto = infoBoletas(request.user.id)
+    #print(listaVentaProducto)
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="informe_ventas.xlsx"'
+
+    # Crear el objeto Excel usando openpyxl
+    wb = Workbook()
+    ws = wb.active
+    ws.append(['ID', 'Nombre', 'Cantidad', 'Precio unitario', 'Total Vendido', 'ID Carrito', 'ID Boleta', 'Fecha Venta', 'Total Boletas'])
+
+    # Agregar datos
+        # ...
+    for venta in listaVentaProducto:
+        count=1
+        for nombre, cantidad, precio, total, idC, idB, fec, totalB in venta:
+            ws.append([count, nombre, cantidad, precio, total, idC, idB, fec, totalB])
+            count+=1
+    # ...
+
+    # Guardar el libro de trabajo
+    wb.save(response)
+
+    return response
+
 def vistaBoleta(request):
-    
+    listaVentaProducto= infoBoletas(request.user.id)
+    #print(listaVentaProducto)#lista de ventas con detalle de los productos
     context = {
-        "texto":"hola"
+        "listaVentaProducto":listaVentaProducto
     }
     return render(request, 'informe/vistaBoleta.html', context)

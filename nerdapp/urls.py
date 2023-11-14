@@ -23,6 +23,9 @@ urlpatterns = [
     path('listForo/', views.listarYComentarForo.as_view(), name='listForo'),
     path('agregarForo/', views.agregarForo, name='agregarForo'),
     path('vistaBoleta/', views.vistaBoleta, name='vistaBoleta'),
+    path('descargar_boleta_pdf/<int:boleta_id>/', views.descargarBoleta_pdf, name='descargar_boleta_pdf'),
+    path('descargar_boletas_excel/', views.descargarExcelBoletas, name='descargar_boletas_excel'),
+
 
 ]
 
