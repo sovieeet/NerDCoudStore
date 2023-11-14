@@ -130,7 +130,7 @@ class Venta(models.Model):
     fecha_venta = models.DateField()
 
     def __str__(self):
-        return str(self.id_venta)
+        return f"ID Venta: {self.id_venta}, Carrito ID: {self.id_carrito_id}, Total Venta: ${self.total_venta}, Fecha Venta: {self.fecha_venta}"
     
 class Delivery(models.Model):
     id_delivery = models.AutoField(primary_key=True)
