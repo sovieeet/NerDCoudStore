@@ -1,0 +1,27 @@
+{% extends 'nerdapp/base.html' %} {% block title %}Signup{% endblock title %}
+{%block contenido %}
+<div class="row">
+	<section class="col">
+		<div class="column1-2">
+			<form class="form-login" action="" method="post">
+				<h2 class="titulo-login">Iniciar Sesión</h2>
+				<br />
+				{% load crispy_forms_tags %} {% csrf_token %} {{ form | crispy }}
+				<input type="submit" value="Ingresar" class="btn-login" />
+			</form>
+		</div>
+	</section>
+
+	<section class="col">
+		<div class="column1-1">
+			<div class="contenedor-logo-login">
+				<img class="logo-login" src="../../static/nerdapp/img/Logo.png" />
+				<br />
+				<button class="btn-crear">
+					<a href="{% url 'signup' %}" style="text-decoration: none; color: #000">Crear cuenta</a>
+				</button>
+			</div>
+		</div>
+	</section>
+</div>
+{%endblock contenido %}

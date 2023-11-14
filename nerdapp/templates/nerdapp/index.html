@@ -1,33 +1,58 @@
+{% extends 'nerdapp/base.html' %} {% block title %}Index{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}
+
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Página Hola Mundo</title>
-    
-    <!-- Agrega los enlaces a Bootstrap desde un CDN -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</head>
+<html>
+
+
 <body>
-    <!-- Contenedor principal utilizando clases de Bootstrap -->
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12 text-center">
-                <!-- Encabezado con estilo Bootstrap -->
-                <h1 class="display-4">Nerdcoud Store base</h1>
-                <!-- Párrafo con fondo rojo y texto blanco, ajustado al texto y redondeado -->
-                <p class="bg-danger text-white p-2 m-0 rounded d-inline-block">Esta es la prueba de Bootstrap</p>
-                <!-- Contenedor separado para el botón -->
-                <div class="mt-2">
-                    <!-- Botón de Bootstrap -->
-                    <button class="btn btn-primary">Presiona aquí</button>
-                </div>
-                <a href="{% url 'page2' %}" class="btn btn-primary">Presiona aquí para ir a la página 2</a>
-            </div>
-        </div>
-    </div>
+	<div id="carouselExample" class="carousel slide">
+		<div class="carousel-inner">
+			<div class="carousel-item active">
+				<img src="../static/nerdapp/img/carrusel/1.png" class="d-block" alt="..."
+					style="height: 300px; width: 100%;">
+			</div>
+			<div class="carousel-item">
+				<img src="../static/nerdapp/img/carrusel/2.png" class="d-block" alt="..."
+					style="height: 300px;width: 100%;">
+			</div>
+			<div class="carousel-item">
+				<img src="../static/nerdapp/img/carrusel/3.png" class="d-block" alt="..."
+					style="height: 300px;width: 100%;">
+			</div>
+		</div>
+		<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Next</span>
+		</button>
+	</div>
+
+	<div class="productos-container">
+		<h2 class="product-heading">¡Los más nuevo!</h2>
+		<div class="productos-list">
+			{% for p in productos %}
+			<div class="product-item">
+				<div class="product-image">
+					{% if p.imagen %}
+					<img src="{{ p.imagen.url }}" alt="img product" />
+					</a><br>
+					{% endif %}
+				</div>
+				<div class="product-details">
+					<a href="{% url 'checkout' p.id_producto %}" class="product-title"
+						style="text-decoration: none; color: #04668D">
+						{{ p.nombre | title }}</a>
+					<p class="product-price">${{ p.precio |intcomma }}</p>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
 </body>
+
 </html>
+{% endblock contenido %}

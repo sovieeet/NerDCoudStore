@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Categorias</title>
+</head>
+<body>
+    <h1>Lista de Categorias</h1>
+    <ul>
+        {% for categoria in categorias %}
+            <li>{{ categoria.nombre_categoria }}</li>
+        {% empty %}
+            <li>No hay categoria disponibles.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

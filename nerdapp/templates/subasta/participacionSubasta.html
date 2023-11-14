@@ -1,0 +1,26 @@
+{% extends "nerdapp/base.html" %} {% block contenido %}
+<div class="row">
+	<div class="col-12 col-md-6 offset-md-3">
+		<div class="card">
+			<div class="card-body mx-auto pt-4">
+				<h5 class="card-title">Comprobante de Participación</h5>
+				<p class="card-text">
+					Participaste en la subasta <strong>{{ subasta}}</strong><br />
+					con un monto de <strong>${{ monto }}</strong>.<br />
+					La subasta finaliza el {{fecha_termino}} a las {{ hora_termino }}.<br />
+					<hr>
+
+				<div style="text-align: center;">
+					<i>
+						Te mantendremos informado si resultas ganador<br />
+						Atte Equipo Nerdcoud Store
+					</i>
+				</div>
+
+				</p>
+			</div>
+		</div>
+		<br />
+	</div>
+</div>
+{% endblock contenido %}
