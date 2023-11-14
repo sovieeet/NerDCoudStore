@@ -4,7 +4,6 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import *
-#from .models import Categoria, Producto, Subasta, Usuario_subasta, Usuario, ParticiparSubasta, Publicacion
 from .forms import *
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -12,7 +11,7 @@ from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
 from django.db.models import Q
-from django.core.mail import send_mass_mail
+from django.core.mail import send_mail
 from random import randrange
 from django.db.models import Sum
 from datetime import datetime
@@ -26,6 +25,7 @@ import locale
 
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
+from nerdcoudstore.settings import EMAIL_HOST_USER
 
 def index(request):
     productos = Producto.objects.all().order_by("-fecha_creacion")[:3]
@@ -66,7 +66,14 @@ def signup(request):
                 apellido = aux_user.last_name,
                 correo = aux_user.email,        
             )
+            
+            subject = "Usuario/a Creado" 
+            message = "Estimado/a usuario/a" + " " + aux_user.username + ", su cuenta de NerdCoudStore ha sido creada."
+            email = aux_user.email
+            recipient_list = [email]
+            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True) 
             usuario.save()
+
             user = authenticate(username=formulario.cleaned_data['username'], password=formulario.cleaned_data['password1'])
             login(request, user)
             messages.success(request,"cuenta creada correctamente")
@@ -89,8 +96,18 @@ def agregarSubasta(request):
                 usuario_id_usuario=usuario,  # Obtiene el id del usuario actual
                 subasta_id_subasta=subasta # Usa el id de la subasta recién creada
             )
+
+            subject = "Subasta Creada" 
+            message = "Estimado/a " + usuario.nombre_usuario + ", su subasta '" + subasta.nombre + "' ha sido creada con un valor inicial de " + "$" + str(subasta.precio_inicial) + " CLP."
+            email = usuario.correo
+            recipient_list = [email]
+            html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" title="source: imgur.com" />
+            <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
+            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+
             usuario_subasta.save()  # Guarda la relación en UsuarioSubasta
             data['mensaje']="guardado correctamente"
+            return redirect('listSubastas')
         else:
             data["form"] = formulario
     return render(request, 'subasta/agregarSubasta.html',data)
@@ -129,6 +146,21 @@ class ListarYParticiparSubastas(View):
             )
             participarSubastaUsuario.save()
             subastaClass.precio_mas_alto = montoS
+
+            subject = "Participación en Subasta Exitosa"
+            message = f"Estimado/a {usuarioClass.nombre_usuario}, su participación en la subasta '{subastaClass.nombre}' ha sido exitosa."
+            email = usuarioClass.correo
+            recipient_list = [email]
+
+            html_message = f"""
+            <p>{message}</p>
+            <p>Ha ofertado con éxito en la subasta. El monto de su oferta es de ${montoS} CLP.</p>
+            <img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma">
+            <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>
+            """
+
+            send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+            
             subastaClass.save()
             return redirect(reverse('participacionSubasta', args=[subasta, montoS]))
         elif  int(montoS) < int(subastaClass.precio_inicial) :
@@ -194,15 +226,37 @@ def CheckOut(request, id_producto):
 
 def PaymentSuccessful(request, id_producto):
 
-    productos = Producto.objects.get(id_producto=id_producto)
+    producto = Producto.objects.get(id_producto=id_producto)
+    usuario = request.user
 
-    return render(request, 'nerdapp/payment-success.html', {'productos': productos})
+    subject = "Compra Exitosa"
+    message = f"Estimado/a {usuario.nombre_usuario}, ¡su compra de {producto.nombre} ha sido exitosa!"
+    email = usuario.correo
+    recipient_list = [email]
+
+    html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma">
+    <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
+
+    send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+
+    return render(request, 'nerdapp/payment-success.html', {'productos': producto})
 
 def paymentFailed(request, id_producto):
 
-    productos = Producto.objects.get(id_producto=id_producto)
+    producto = Producto.objects.get(id_producto=id_producto)
+    usuario = request.user
 
-    return render(request, 'nerdapp/payment-failed.html', {'productos': productos})
+    subject = "Compra fallida"
+    message = f"Estimado/a {usuario.nombre_usuario}, su compra de {producto.nombre} no se ha completado"
+    email = usuario.correo
+    recipient_list = [email]
+
+    html_message = f"""<p>{message}</p><img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma">
+    <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
+
+    send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+
+    return render(request, 'nerdapp/payment-failed.html', {'productos': producto})
 
 class listarYComentarForo(View):
     def get(self, request, *args, **kwargs):
@@ -232,6 +286,7 @@ def participacionForo(request, id_publicacion):
     except Publicacion.DoesNotExist:
         return HttpResponse("Foro no encontrado.")
 
+    
 def agregarForo(request):
     data = {'form': ForoForm()}
     if request.method =="POST":
@@ -239,13 +294,33 @@ def agregarForo(request):
         #print(formulario)
         if formulario.is_valid():
             #print("formulario valido")
+
+            # Obtener el usuario actual
+            usuario = request.user
+
+            # Envía un correo de confirmación
+            subject = "Foro Creado Exitosamente"
+            message = f"Estimado/a {usuario.username}, su foro ha sido creado exitosamente." 
+            email = usuario.email
+            recipient_list = [email]
+
+            html_message = f"""
+            <p>{message}</p>
+            <img src="https://i.imgur.com/wSs6Cnr.png" alt="Firma" style="width: 100%">
+            <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>
+            """
+
+            send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+
+            data['mensaje'] = "Guardado correctamente"
+
             formulario.save()
-            #usuario = Usuario.objects.get(id_usuario=request.user.id)  # Obtiene el usuario actual
+        #usuario = Usuario.objects.get(id_usuario=request.user.id)  # Obtiene el usuario actual
             data['mensaje']="guardado correctamente"
         else:
-            #print("formulario no valido")
-            data["form"] = formulario
-    return render(request, 'foro/agregarForo.html',data)
+        #print("formulario no valido")
+            data["form"] = formulario        
+            return render(request, 'foro/agregarForo.html',data)
 
 def vistaVenta(request):
     diccAlias, diccNombre = diccProductos()
@@ -399,3 +474,4 @@ def descargar_excel(request):
     wb.save(response)
 
     return response
+
