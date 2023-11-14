@@ -1,0 +1,29 @@
+{% extends "nerdapp/base.html" %} {% block contenido %}
+{% load static %}
+
+<div class="row">
+    <div class="col-4">
+        <div class="containerGraf inline"">
+            <div class=" item inline-item">
+            <div id="chart" class="chart" style="width: 1000px; height: 300px;"></div>
+        </div>
+    </div>
+
+</div>
+<div class="col" style="background-color: aqua; width: 100%;">
+    {% for keyD, value in diccIdNombre.items %}
+    <p>{{ value }} | {{ keyD }}| </p>
+    {% endfor %}
+
+
+
+</div>
+<!--<div class="col-sm-12 col-md-4 col-lg-4 col-xl-4 mx-auto">
+            <div id="chart" class="chart" style="width: 100%; min-height: 400px;"></div>
+        </div>-->
+</div>
+{% endblock contenido %}
+{% block scriptsCode %}
+<script src="{% static 'nerdapp/js/graficoCantidadProductoMes.js' %} " />
+</script>
+{% endblock scriptsCode %}

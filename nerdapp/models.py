@@ -70,7 +70,7 @@ class Usuario_subasta(models.Model):
     subasta_id_subasta = models.ForeignKey(Subasta, null=False, blank=False, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.id_usuario_subasta
+        return f"Usuario: {self.usuario_id_usuario} - Subasta: {self.subasta_id_subasta}"
 
 class Publicacion(models.Model):
     id_publicacion = models.AutoField(primary_key=True)

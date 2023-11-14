@@ -12,7 +12,10 @@ from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
 from django.db.models import Q
-from django.core.mail import send_mail
+from django.core.mail import send_mass_mail
+from random import randrange
+from django.db.models import Sum
+from datetime import datetime
 
 def index(request):
     productos = Producto.objects.all().order_by("-fecha_creacion")[:3]
@@ -22,9 +25,6 @@ def index(request):
     }
 
     return render(request, 'nerdapp/index.html', data)
-
-def dashboard(request):
-    return render(request, 'nerdapp/dashboard.html')
 
 def page2(request):
     return render(request, 'nerdapp/page2.html')
@@ -193,25 +193,6 @@ def paymentFailed(request, id_producto):
     productos = Producto.objects.get(id_producto=id_producto)
 
     return render(request, 'nerdapp/payment-failed.html', {'productos': productos})
-"""
-def enviar_correo(subasta):
-    subject = 'Subasta finalizada'
-    message = f'La subasta {subasta.nombre} ha finalizado. ¡Felicidades! Tu oferta de ${subasta.precio_mas_alto} ha ganado.'
-    from_email = 'your-email@example.com'
-    recipient_list = [subasta.usuario_id_usuario_id.correo]  # Dirección de correo del usuario que ganó la subasta
-
-    send_mail(subject, message, from_email, recipient_list)
-
-
-def listForo(request):
-    publicaciones = Publicacion.objects.all()
-    comentarios = Comentario.objects.all()
-    context = {
-            'publicaciones': publicaciones,
-            'comentarios': comentarios
-        }
-    return render(request, 'foro/listForo.html', context)
-    """
 
 class listarYComentarForo(View):
     def get(self, request, *args, **kwargs):
@@ -240,6 +221,7 @@ def participacionForo(request, id_publicacion):
         return render(request, 'foro/participacionForo.html', context)
     except Publicacion.DoesNotExist:
         return HttpResponse("Foro no encontrado.")
+
 def agregarForo(request):
     data = {'form': ForoForm()}
     if request.method =="POST":
@@ -254,3 +236,100 @@ def agregarForo(request):
             print("formulario no valido")
             data["form"] = formulario
     return render(request, 'foro/agregarForo.html',data)
+
+def vistaVenta(request):
+    diccAlias, diccNombre = diccProductos()
+    diccC = {}
+    diccI = {}
+
+    for key, value in diccNombre.items():
+        id_producto, nombre_producto = key.split("|", 1)
+        diccI[nombre_producto] = id_producto
+        diccC[nombre_producto] = value
+    print(diccC)
+    context = {
+        'diccIdNombre': diccI,
+        'diccCantNombre': diccC
+    }
+
+    return render(request, 'informe/vistaVenta.html', context)
+
+
+def get_chart(request):
+    diccAlias,diccNombre = diccProductos()
+    diccionario_ordenado=diccAlias
+    now = datetime.now()
+    current_month = now.month
+    current_year = now.year
+    nombres_productos = list(diccionario_ordenado.keys())
+    cantidad_prodcutos = list(diccionario_ordenado.values())
+    #print(cantidad_prodcutos)
+    #print(nombres_productos)
+    series = cantidad_prodcutos
+
+    chart={
+        'xAxis':[
+            {
+                'type' : "category",
+                'data' : nombres_productos,
+                'name': 'Productos',  # Título del eje X
+                'axisLabel': {
+                    'rotate': 45,  # Rotar etiquetas del eje X para mejor legibilidad
+                },
+            }
+        ],
+        'yAxis':[
+            {
+                'type' : "value",
+                'name': 'Cantidad Vendida en '+str(current_month)+'/'+str(current_year),
+            }
+        ],
+        'series':[
+            {
+            'data':series,
+            'type': 'bar',
+            'showBackground': 'true',
+            'backgroundStyle': {
+                'color': '#6264eb21'
+            }
+            }
+        ]
+    }
+    return JsonResponse(chart)
+
+def diccProductos():
+    productos = Producto.objects.all().values()
+    carritoUsuarios = Carrito.objects.filter(
+            estado_pago="pagado"
+        ).values()
+    cont=0
+    lisCarritoProductos =[]
+    while(cont<len(carritoUsuarios)):
+        carritosProductos = CarritoProducto.objects.filter(
+            id_carrito_id=carritoUsuarios[cont]['id_carrito']
+        ).values()
+        lisCarritoProductos.extend(carritosProductos)
+        cont+=1
+    now = datetime.now()
+    current_month = now.month
+    current_year = now.year
+    ventas_por_mes = Venta.objects.filter(
+        fecha_venta__month =current_month,
+        fecha_venta__year =current_year
+    ).values()
+    diccProductos ={str(producto['id_producto'])+"-"+producto['nombre'][:5]: 0 for producto in productos}
+    diccNombres = {str(producto['id_producto'])+"|"+producto['nombre']: 0 for producto in productos}
+    for venta in ventas_por_mes:
+        for carpro in lisCarritoProductos:
+            if venta['id_carrito_id_id'] == carpro['id_carrito_id_id']:
+                producto = Producto.objects.filter(
+                    id_producto=carpro['id_producto_id_id']
+                ).values()[0]
+                diccProductos.update({str(producto['id_producto'])+"-"+producto['nombre'][:5]:diccProductos[str(producto['id_producto'])+"-"+producto['nombre'][:5]]+int(carpro['cantidad_producto'])})
+                diccNombres.update({str(producto['id_producto'])+"|"+producto['nombre']:diccNombres[str(producto['id_producto'])+"|"+producto['nombre']]+int(carpro['cantidad_producto'])})
+    diccionario_ordenado = dict(sorted(diccProductos.items(), key=lambda item: item[1], reverse=True))
+    diccionario_Nombres = dict(sorted(diccNombres.items(), key=lambda item: item[1], reverse=True))
+    
+    #print(diccionario_Nombres)
+    #{'3-Cojín': 2, '6-Manta': 1, '2-Tazón': 0, '4-Nicke': 0}
+    return (diccionario_ordenado,diccionario_Nombres)
