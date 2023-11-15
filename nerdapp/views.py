@@ -65,6 +65,38 @@ def signup(request):
                 apellido = aux_user.last_name,
                 correo = aux_user.email,        
             )
+            carrito = Carrito.objects.create(
+                usuario_id_usuario = usuario,
+                estado_pago = 'pendiente',
+                total_carrito = 0
+            )
+            carrito.save()
+            subject = "Usuario/a Creado" 
+            message = "Estimado/a usuario/a" + " " + aux_user.username + ", su cuenta de NerdCoudStore ha sido creada."
+            email = aux_user.email
+            recipient_list = [email]
+            send_mail(subject, message, EMAIL_HOST_USER, recipient_list, fail_silently=True) 
+            usuario.save()
+
+            user = authenticate(username=formulario.cleaned_data['username'], password=formulario.cleaned_data['password1'])
+            login(request, user)
+            messages.success(request,"cuenta creada correctamente")
+            return redirect(to="index")
+        data["form"] = formulario
+
+        return render(request, 'registration/signup.html', data)
+
+    if request.method == 'POST':
+        formulario = CustomUserCreationForm(data=request.POST)
+        if formulario.is_valid():
+            aux_user = formulario.save()
+            usuario = Usuario.objects.create(
+                id_usuario = aux_user.id,
+                nombre_usuario = aux_user.username,
+                nombre = aux_user.first_name,
+                apellido = aux_user.last_name,
+                correo = aux_user.email,        
+            )
             
             subject = "Usuario/a Creado" 
             message = "Estimado/a usuario/a" + " " + aux_user.username + ", su cuenta de NerdCoudStore ha sido creada."
@@ -216,7 +248,15 @@ def PaymentSuccessful(request, id_producto):
     <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
 
     send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
-
+    carritoAnterior = Carrito.objects.get(usuario_id_usuario=usuario.id_usuario)
+    carritoAnterior.estado_pago='pagado'
+    carritoAnterior.save()
+    carritoNuevo = Carrito.objects.create(
+                usuario_id_usuario = usuario,
+                estado_pago = 'pendiente',
+                total_carrito = 0
+            )
+    carritoNuevo.save()
     return render(request, 'nerdapp/payment-success.html', {'productos': producto})
 
 def paymentFailed(request, id_producto):
@@ -609,7 +649,7 @@ def agregar_al_carrito(request, id_producto):
         return render(request, "Producto no encontrado", status=404)
 
     # Obtén el carrito del usuario actual o crea uno si no existe
-    carrito, creado = Carrito.objects.get_or_create(request.user.id, estado_pago='pendiente')
+    carrito, creado = Carrito.objects.get_or_create(usuario_id_usuario=request.user.id, estado_pago='pendiente')
 
     # Busca el producto en el carrito
     carrito_producto_existente = CarritoProducto.objects.filter(
@@ -648,6 +688,7 @@ def ver_carrito(request):
 
     host = request.get_host()
 
+    
     paypal_checkout = {
         'business': settings.PAYPAL_RECEIVER_EMAIL,
         'amount': monto_usd,
@@ -655,7 +696,6 @@ def ver_carrito(request):
         'invoice': uuid.uuid4(),
         'currency_code': 'USD',
         'notify_url': f"http://{host}{reverse('paypal-ipn')}",
-        
     }
 
     paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
