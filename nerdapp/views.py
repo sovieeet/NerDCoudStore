@@ -775,7 +775,3 @@ def eliminar_del_carrito(request, id_carrito_producto):
 
     # Redirige a la vista del carrito
     return redirect('ver_carrito')
-
-
-
-
