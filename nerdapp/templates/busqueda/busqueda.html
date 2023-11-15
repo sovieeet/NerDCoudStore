@@ -33,6 +33,9 @@
                             style="text-decoration: none; color: #04668D">
                             {{ p.nombre | title }}</a>
                         <p class="product-price">${{ p.precio |intcomma }}</p>
+                        <a href="{% url 'agregar_al_carrito' p.id_producto %}" class="carrito-icon">
+                            <i class="bi bi-cart-plus fs-2"></i>
+                        </a>
                     </div>
                 </div>
                 {% endfor %}
