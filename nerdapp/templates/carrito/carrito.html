@@ -1,0 +1,42 @@
+{% extends 'nerdapp/base.html' %} {% block title %}Index{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}
+<div
+	style="
+		width: 90%;
+		background-color: #6264eb21;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		margin: auto;
+	"
+>
+	<div class="row" style="padding: 5%">
+		<h1 class="text-subtitulo">Tu Carrito de Compras</h1>
+		{% if carrito_items %} {% for item in carrito_items %}
+		<div class="row">
+			<div class="col-3">
+				{% if item.id_producto_id.imagen %}
+				<img
+					src="{{ item.id_producto_id.imagen.url }}"
+					alt="img product"
+					style="width: 100%; border: #545f71 1px solid; border-radius: 5px"
+				/>
+				{% endif %}
+			</div>
+			<div class="col-6">
+				<h3>{{ item.id_producto_id.nombre }}</h3>
+				<p>Cantidad: {{ item.cantidad_producto }}</p>
+				<p>Total: ${{ item.total_por_producto }}</p>
+			</div>
+		</div>
+		{% endfor %}
+		<div style="text-align: end; margin-top: 20px">
+			<h3>Total del Carrito: ${{ carrito_total }}</h3>
+			<!-- Agrega aquí el código de checkout o cualquier otro botón que necesites -->
+		</div>
+		{% else %}
+		<p>Tu carrito está vacío.</p>
+		{% endif %}
+	</div>
+</div>
+
+{% endblock %}
