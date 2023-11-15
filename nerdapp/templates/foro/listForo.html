@@ -43,7 +43,17 @@
 		</div>
 
 		<div style="text-align: start">
-			<div class="subasta-title">{{ p.titulo_publicacion}}</div>
+			<div class="row">
+				<div class="col">
+					<div class="subasta-title">{{ p.titulo_publicacion}}</div>
+				</div>
+				<div class="col-1" style="text-align: end; margin: auto;">
+					<h4 class="reportar-icon-publicacion" data-comentario-id="{{ p.id_publicacion}}">
+						<i class="bi bi-exclamation-octagon"></i>
+					</h4>
+				</div>
+			</div>
+
 
 			<div class="col" style="background-color: #6264eb21;
 				border: 1px solid #ddd;border-radius: 5px; padding: 2%; ">
@@ -140,11 +150,25 @@
 </script>
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
+
+		var reportarIconsPublicacion = document.querySelectorAll(".reportar-icon-publicacion");
 		var reportarIcons = document.querySelectorAll(".reportar-icon");
 		var reportarTema = document.getElementById("id_publicacion").value;
 		reportarIcons.forEach(function (icon) {
 			icon.addEventListener("click", function () {
 				var comentarioId = icon.dataset.comentarioId;
+				var confirmacion = confirm("¿Está seguro de reportar esta publicación?");
+				console.log(comentarioId, reportarTema)
+				if (confirmacion) {
+					console.log("entro")
+					window.location.href = "/reportarComentario/" + comentarioId + "/" + reportarTema + "/";
+
+				}
+			});
+		});
+		reportarIconsPublicacion.forEach(function (icon) {
+			icon.addEventListener("click", function () {
+				var comentarioId = 0;
 				var confirmacion = confirm("¿Está seguro de reportar esta publicación?");
 				console.log(comentarioId, reportarTema)
 				if (confirmacion) {

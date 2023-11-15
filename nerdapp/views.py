@@ -259,7 +259,7 @@ def paymentFailed(request, id_producto):
 
 class listarYComentarForo(View):
     def get(self, request, *args, **kwargs):
-        publicaciones = Publicacion.objects.all().order_by('-fecha_publicacion')
+        publicaciones = Publicacion.objects.filter(estado_publicacion='activo').order_by('-fecha_publicacion')
         comentarios = Comentario.objects.filter(estado_comentario='activo').order_by('-fecha_comentario')
         context = {
                 'publicaciones': publicaciones,
@@ -319,7 +319,7 @@ def agregarForo(request):
         else:
         #print("formulario no valido")
             data["form"] = formulario        
-            return render(request, 'foro/agregarForo.html',data)
+    return render(request, 'foro/agregarForo.html',data)
 
 """def reportar_comentario(request):
     if request.method == 'POST':
@@ -350,17 +350,27 @@ def reportar_comentario(request):
         return JsonResponse({'status': 'error', 'message': 'Método no permitido'})"""
 
 def reportarComentario(request, comentarioID, publicacionID):
-    print(comentarioID, publicacionID)
-    comentario = Comentario.objects.get(id_comentario=comentarioID)
-    comentario.estado_comentario = 'denunciado'
-    comentario.save()
+    if(comentarioID != 0):
+        print(comentarioID, publicacionID)
+        comentario = Comentario.objects.get(id_comentario=comentarioID)
+        comentario.estado_comentario = 'denunciado'
+        comentario.save()
+        
+        print(comentario)
+        # Renderiza la plantilla directamente, no es necesario pasar args
+        
+    else:
+        print(comentarioID, publicacionID)
+        publicacion = Publicacion.objects.get(id_publicacion=int(publicacionID))
+        publicacion.estado_publicacion = 'denunciado'
+        publicacion.save()
+        # Renderiza la plantilla directamente, no es necesario pasar args
     context={
-        'publicacionID':publicacionID,
-        'comentarioID':comentarioID
-    }
-    print(comentario)
-    # Renderiza la plantilla directamente, no es necesario pasar args
+            'publicacionID':publicacionID
+        }
     return render(request, 'foro/reportarForo.html', context)
+    
+
 
 
 def vistaVenta(request):
