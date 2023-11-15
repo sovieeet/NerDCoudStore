@@ -1,5 +1,5 @@
-{% extends 'nerdapp/base.html' %} {% block title %}Index{% endblock title %}
-{%block contenido %} {% load humanize %} {% load static %}
+	{% extends 'nerdapp/base.html' %} {% block title %}NerdCoudStore{% endblock title %}
+	{%block contenido %} {% load humanize %} {% load static %}
 
 <!DOCTYPE html>
 <html>
@@ -32,26 +32,28 @@
 	</div>
 
 	<div class="productos-container">
-		<h2 class="product-heading">¡Los más nuevo!</h2>
-		<div class="productos-list">
-			{% for p in productos %}
-			<div class="product-item">
-				<div class="product-image">
-					{% if p.imagen %}
-					<img src="{{ p.imagen.url }}" alt="img product" />
-					</a><br>
-					{% endif %}
-				</div>
-				<div class="product-details">
-					<a href="{% url 'checkout' p.id_producto %}" class="product-title"
-						style="text-decoration: none; color: #04668D">
-						{{ p.nombre | title }}</a>
-					<p class="product-price">${{ p.precio |intcomma }}</p>
-				</div>
-			</div>
-			{% endfor %}
-		</div>
-	</div>
+    <h2 class="product-heading">¡Los más nuevo!</h2>
+    <div class="productos-list">
+        {% for p in productos %}
+        <div class="product-item">
+            <div class="product-image">
+                {% if p.imagen %}
+                <img src="{{ p.imagen.url }}" alt="img product" />
+                </a><br>
+                {% endif %}
+            </div>
+            <div class="product-details">
+                <a href="{% url 'checkout' p.id_producto %}" class="product-title" style="text-decoration: none; color: #04668D;">
+                    {{ p.nombre | title }}</a>
+                <p class="product-price">${{ p.precio |intcomma }}</p>
+                <a href="{% url 'agregar_al_carrito' p.id_producto %}" class="carrito-icon">
+                    <i class="bi bi-cart-plus fs-2"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 </body>
 
 </html>
