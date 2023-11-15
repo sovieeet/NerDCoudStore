@@ -3,7 +3,6 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 urlpatterns = [
     path('', views.index, name='index'),
     path('categorias/', views.lista_categorias, name='lista_categorias'),
@@ -22,6 +21,12 @@ urlpatterns = [
     path('products/', views.ProductView, name='products'),
     path('listForo/', views.listarYComentarForo.as_view(), name='listForo'),
     path('agregarForo/', views.agregarForo, name='agregarForo'),
+     path('agregar_al_carrito/<int:id_producto>/', views.agregar_al_carrito, name='agregar_al_carrito'),
+    path('ver_carrito/', views.ver_carrito, name='ver_carrito'),
+    path('ver_carrito/', views.ver_carrito, name='ver_carrito'),
+    path('eliminar_del_carrito/<int:id_carrito_producto>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
+
+
 
 ]
 

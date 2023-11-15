@@ -1,39 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos page</title>
-</head>
-<body>
-    <h1>Productos</h1>
-    <div class="product-container">
-        {% for i in productos %}
-            <div class="productos">
-                <a href="{% url 'checkout' i.id_producto %}">
-                    <img class="img" src="{{i.imagen}}" alt="">
-                </a><br>
-                <a href="{% url 'checkout' i.id_producto %}">{{i.nombre}}</a>
-                <p>$ {{i.precio}}</p>
-            </div>
-        {% endfor %}
-    </div>
-    <style>
-        body {
-            padding: 10px;
-            box-sizing: border-box;
-        }
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Productos page</title>
+	</head>
+	<body>
+		<h1>Productos</h1>
+		<div class="product-container">
+			{% for i in productos %}
+			<div class="productos">
+				<a href="{% url 'checkout' i.id_producto %}">
+					<img class="img" src="{{i.imagen}}" alt="" /> </a
+				><br />
+				<a href="{% url 'checkout' i.id_producto %}">{{i.nombre}}</a>
+				<p>$ {{i.precio}}</p>
+			</div>
+			{% endfor %}
+		</div>
+		<style>
+			body {
+				padding: 10px;
+				box-sizing: border-box;
+			}
 
-        .product-container {
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            height: 100vh;
-        }
-        .img {
-            width: 60%;
-            border-radius: 50px;
-        }
-    </style>
-</body>
+			.product-container {
+				display: flex;
+				flex-direction: row;
+				width: 100%;
+				height: 100vh;
+			}
+			.img {
+				width: 60%;
+				border-radius: 50px;
+			}
+		</style>
+	</body>
 </html>

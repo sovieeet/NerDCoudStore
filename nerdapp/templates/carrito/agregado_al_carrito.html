@@ -1,0 +1,10 @@
+{% extends 'nerdapp/base.html' %} {% block title %}Index{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}
+
+<h2>Producto Agregado al Carrito</h2>
+<p>
+	El producto {{ producto.nombre }} se ha agregado exitosamente a tu carrito.
+</p>
+<a href="{% url 'ver_carrito' %}">Ir al Carrito</a>
+
+{% endblock %}
