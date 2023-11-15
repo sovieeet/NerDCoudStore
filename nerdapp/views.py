@@ -53,7 +53,6 @@ def signup(request):
     data = {
         'form': CustomUserCreationForm
     }
-
     if request.method == 'POST':
         formulario = CustomUserCreationForm(data=request.POST)
         if formulario.is_valid():
@@ -97,7 +96,12 @@ def signup(request):
                 apellido = aux_user.last_name,
                 correo = aux_user.email,        
             )
-            
+            carrito = Carrito.objects.create(
+                usuario_id_usuario = usuario,
+                estado_pago = 'pendiente',
+                total_carrito = 0
+            )
+            carrito.save()
             subject = "Usuario/a Creado" 
             message = "Estimado/a usuario/a" + " " + aux_user.username + ", su cuenta de NerdCoudStore ha sido creada."
             email = aux_user.email
@@ -227,20 +231,41 @@ def CheckOut(request, id_producto):
 
     productos = Producto.objects.get(id_producto=id_producto)
 
-    context = {
-        'productos': productos,
+    clp_a_usd = 0.0011
+    
+    precio_clp = float(productos.precio)
+
+    monto_usd = precio_clp * clp_a_usd
+
+    host = request.get_host()
+
+    paypal_checkout = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': monto_usd,
+        'item_name': productos.nombre,
+        'invoice': uuid.uuid4(),
+        'currency_code': 'USD',
+        'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+        'return_url': f"http://{host}{reverse('payment-success', kwargs = {'id_producto': productos.id_producto})}",
+        'cancel_url': f"http://{host}{reverse('payment-failed', kwargs = {'id_producto': productos.id_producto})}",
     }
 
-    return render(request, 'producto/checkout.html', context)
+    paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
 
+    context = {
+        'productos': productos,
+        'paypal': paypal_payment
+    }
 
-def PaymentSuccessful(request, id_producto):
+    return render(request, 'nerdapp/checkout.html', context)
 
-    producto = Producto.objects.get(id_producto=id_producto)
-    usuario = request.user
+def PaymentSuccessful(request, id_carrito):
+
+    producto = Carrito.objects.get(id_carrito=id_carrito)
+    usuario = Carrito.objects.get(usuario_id_usuario=request.user.id, estado_pago='pagado')
 
     subject = "Compra Exitosa"
-    message = f"Estimado/a {usuario.nombre_usuario}, ¡su compra de {producto.nombre} ha sido exitosa!"
+    message = f"Estimado/a  ¡su compra de {producto.total_carrito} ha sido exitosa!"
     email = usuario.correo
     recipient_list = [email]
 
@@ -257,15 +282,15 @@ def PaymentSuccessful(request, id_producto):
                 total_carrito = 0
             )
     carritoNuevo.save()
-    return render(request, 'nerdapp/payment-success.html', {'productos': producto})
+    return render(request, 'nerdapp/payment-success.html', {'carrito': producto})
 
-def paymentFailed(request, id_producto):
+def paymentFailed(request, id_carrito):
 
-    producto = Producto.objects.get(id_producto=id_producto)
+    producto = Carrito.objects.get(id_carrito=id_carrito)
     usuario = request.user
 
     subject = "Compra fallida"
-    message = f"Estimado/a {usuario.nombre_usuario}, su compra de {producto.nombre} no se ha completado"
+    message = f"Estimado/a {usuario.nombre_usuario}, su compra de {producto.total_carrito} no se ha completado"
     email = usuario.correo
     recipient_list = [email]
 
@@ -274,7 +299,7 @@ def paymentFailed(request, id_producto):
 
     send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
 
-    return render(request, 'nerdapp/payment-failed.html', {'productos': producto})
+    return render(request, 'nerdapp/payment-failed.html', {'carrito': producto})
 
 class listarYComentarForo(View):
     def get(self, request, *args, **kwargs):
@@ -719,6 +744,7 @@ def ver_carrito(request):
         'invoice': uuid.uuid4(),
         'currency_code': 'USD',
         'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+        'return_url': f"http://{host}/",
     }
 
     paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
@@ -749,7 +775,3 @@ def eliminar_del_carrito(request, id_carrito_producto):
 
     # Redirige a la vista del carrito
     return redirect('ver_carrito')
-
-
-
-
