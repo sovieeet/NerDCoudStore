@@ -263,8 +263,7 @@ def participacionForo(request, id_publicacion):
         return render(request, 'foro/participacionForo.html', context)
     except Publicacion.DoesNotExist:
         return HttpResponse("Foro no encontrado.")
-
-    
+   
 def agregarForo(request):
     data = {'form': ForoForm()}
     if request.method =="POST":
@@ -300,34 +299,6 @@ def agregarForo(request):
             data["form"] = formulario        
     return render(request, 'foro/agregarForo.html',data)
 
-"""def reportar_comentario(request):
-    if request.method == 'POST':
-        print("esta en view")
-        comentario_id = request.POST.get('comentarioId')
-        try:
-            comentario = Comentario.objects.get(id_comentario=comentario_id)
-            comentario.estado_comentario = 'denunciado'
-            comentario.save()
-            return JsonResponse({'success': True})
-        except Comentario.DoesNotExist:
-            return JsonResponse({'error': 'Comentario no encontrado'}, status=404)
-
-    return JsonResponse({'error': 'Solicitud no válida'}, status=400)
-
-def reportar_comentario(request):
-    if request.method == 'POST':
-        print("esta en view")
-        comentario_id = request.POST.get('comentario_id')
-        publicacion_id = request.POST.get('publicacion_id')
-
-        comentario = Comentario.objects.get(id_comentario=comentario_id)
-        comentario.estado_comentario = 'denunciado'
-        comentario.save()
-
-        return JsonResponse({'status': 'success', 'publicacion_id': publicacion_id})
-    else:
-        return JsonResponse({'status': 'error', 'message': 'Método no permitido'})"""
-
 def reportarComentario(request, comentarioID, publicacionID):
     if(comentarioID != 0):
         print(comentarioID, publicacionID)
@@ -349,9 +320,6 @@ def reportarComentario(request, comentarioID, publicacionID):
         }
     return render(request, 'foro/reportarForo.html', context)
     
-
-
-
 def vistaVenta(request):
     diccAlias, diccNombre = diccProductos()
     diccIdNombreCant = [(str(id), nombre, cantidad, precio, total) for id, nombre, cantidad, precio, total in diccNombre]
