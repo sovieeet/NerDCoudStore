@@ -53,7 +53,6 @@ def signup(request):
     data = {
         'form': CustomUserCreationForm
     }
-
     if request.method == 'POST':
         formulario = CustomUserCreationForm(data=request.POST)
         if formulario.is_valid():
@@ -65,7 +64,12 @@ def signup(request):
                 apellido = aux_user.last_name,
                 correo = aux_user.email,        
             )
-            
+            carrito = Carrito.objects.create(
+                usuario_id_usuario = usuario,
+                estado_pago = 'pendiente',
+                total_carrito = 0
+            )
+            carrito.save()
             subject = "Usuario/a Creado" 
             message = "Estimado/a usuario/a" + " " + aux_user.username + ", su cuenta de NerdCoudStore ha sido creada."
             email = aux_user.email
@@ -191,29 +195,45 @@ def ProductView(request):
 
     return render(request, 'product.html', {'productos': get_productos})
 
-def CheckOut(request):
-    # Obtén el carrito del usuario actual o crea uno si no existe
-    carrito, creado = Carrito.objects.get_or_create(usuario_id_usuario=request.user.id, estado_pago='pendiente')
+def CheckOut(request, id_producto):
 
-    # Obtén los productos en el carrito
-    productos_en_carrito = CarritoProducto.objects.filter(id_carrito_id=carrito)
-
-    # Calcula el total del carrito
-    total_carrito = sum(producto.total_por_producto for producto in productos_en_carrito)
+    productos = Producto.objects.get(id_producto=id_producto)
 
     clp_a_usd = 0.0011
-    monto_usd = total_carrito * clp_a_usd
+    
+    precio_clp = float(productos.precio)
+
+    monto_usd = precio_clp * clp_a_usd
 
     host = request.get_host()
 
+    paypal_checkout = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': monto_usd,
+        'item_name': productos.nombre,
+        'invoice': uuid.uuid4(),
+        'currency_code': 'USD',
+        'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+        'return_url': f"http://{host}{reverse('payment-success', kwargs = {'id_producto': productos.id_producto})}",
+        'cancel_url': f"http://{host}{reverse('payment-failed', kwargs = {'id_producto': productos.id_producto})}",
+    }
 
-def PaymentSuccessful(request, id_producto):
+    paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
 
-    producto = Producto.objects.get(id_producto=id_producto)
-    usuario = request.user
+    context = {
+        'productos': productos,
+        'paypal': paypal_payment
+    }
+
+    return render(request, 'nerdapp/checkout.html', context)
+
+def PaymentSuccessful(request, id_carrito):
+
+    producto = Carrito.objects.get(id_carrito=id_carrito)
+    usuario = Carrito.objects.get(usuario_id_usuario=request.user.id, estado_pago='pagado')
 
     subject = "Compra Exitosa"
-    message = f"Estimado/a {usuario.nombre_usuario}, ¡su compra de {producto.nombre} ha sido exitosa!"
+    message = f"Estimado/a  ¡su compra de {producto.total_carrito} ha sido exitosa!"
     email = usuario.correo
     recipient_list = [email]
 
@@ -221,16 +241,24 @@ def PaymentSuccessful(request, id_producto):
     <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
 
     send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
+    carritoAnterior = Carrito.objects.get(usuario_id_usuario=usuario.id_usuario)
+    carritoAnterior.estado_pago='pagado'
+    carritoAnterior.save()
+    carritoNuevo = Carrito.objects.create(
+                usuario_id_usuario = usuario,
+                estado_pago = 'pendiente',
+                total_carrito = 0
+            )
+    carritoNuevo.save()
+    return render(request, 'nerdapp/payment-success.html', {'carrito': producto})
 
-    return render(request, 'nerdapp/payment-success.html', {'productos': producto})
+def paymentFailed(request, id_carrito):
 
-def paymentFailed(request, id_producto):
-
-    producto = Producto.objects.get(id_producto=id_producto)
+    producto = Carrito.objects.get(id_carrito=id_carrito)
     usuario = request.user
 
     subject = "Compra fallida"
-    message = f"Estimado/a {usuario.nombre_usuario}, su compra de {producto.nombre} no se ha completado"
+    message = f"Estimado/a {usuario.nombre_usuario}, su compra de {producto.total_carrito} no se ha completado"
     email = usuario.correo
     recipient_list = [email]
 
@@ -239,7 +267,7 @@ def paymentFailed(request, id_producto):
 
     send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
 
-    return render(request, 'nerdapp/payment-failed.html', {'productos': producto})
+    return render(request, 'nerdapp/payment-failed.html', {'carrito': producto})
 
 class listarYComentarForo(View):
     def get(self, request, *args, **kwargs):
@@ -499,10 +527,11 @@ def agregar_al_carrito(request, id_producto):
     return render(request, 'carrito/agregado_al_carrito.html')  
 
 def ver_carrito(request):
-  
+    carrito = Carrito.objects.get(usuario_id_usuario=request.user.id, estado_pago='pendiente')
+
     carrito_items = CarritoProducto.objects.filter(id_carrito_id__usuario_id_usuario=request.user.id, id_carrito_id__estado_pago='pendiente')
     carrito_total = carrito_items.aggregate(Sum('total_por_producto'))['total_por_producto__sum'] or 0
-
+    print(carrito)
     clp_a_usd = 0.0011
     monto_usd = carrito_total * clp_a_usd
 
@@ -515,6 +544,9 @@ def ver_carrito(request):
         'invoice': uuid.uuid4(),
         'currency_code': 'USD',
         'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+        'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+        'return_url': f"http://{host}{reverse('payment-success', kwargs = {'id_carrito': carrito.id_carrito})}",
+        'cancel_url': f"http://{host}{reverse('payment-failed', kwargs = {'id_carrito': carrito.id_carrito})}",
         
     }
 
@@ -527,6 +559,7 @@ def ver_carrito(request):
     }
 
     return render(request, 'carrito/ver_carrito.html', context)
+
 
    
 
