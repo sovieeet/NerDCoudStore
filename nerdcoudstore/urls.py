@@ -22,7 +22,9 @@ urlpatterns = [
     path('', include('nerdapp.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('paypal.standard.ipn.urls'))
+    #path('', include('paypal.standard.ipn.urls')),
+    path('paypal-ipn/', include('paypal.standard.ipn.urls')),
+
 ]
 
 if settings.DEBUG:

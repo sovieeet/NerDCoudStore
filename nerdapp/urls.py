@@ -39,6 +39,7 @@ urlpatterns = [
     path('reportarComentario/<int:comentarioID>/<int:publicacionID>/', views.reportarComentario, name='reportarComentario'),
     path('buscar/', views.buscar, name='buscar'), 
     path('buscarSubasta/', views.buscarSubasta, name='buscarSubasta'), 
+    
     #path('reportar_comentario/<int:comentario_id>/<int:publicacion_id>', views.reportarComentario, name='reportar_comentario'),
     
 

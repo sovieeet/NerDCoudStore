@@ -2,146 +2,121 @@
 
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>{% block title %}NerdCoudStore{% endblock %}</title>
 
-		<link rel="icon" type="image/png" href="{% static 'nerdapp/img/icon.png' %}">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>{% block title %}NerdCoudStore{% endblock %}</title>
 
-		<!-- Agrega el enlace a Bootstrap 5 CSS aquí -->
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
-		/>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-		/>
-		{% load static %}
-		<link href="{% static 'nerdapp/css/login.css' %} " rel="stylesheet" />
-		<link href="{% static 'nerdapp/css/singup.css' %} " rel="stylesheet" />
-		<link href="{% static 'nerdapp/css/estilos.css' %} " rel="stylesheet" />
-		<!-- Agrega aquí tus etiquetas meta, estilos y scripts comunes -->
-	</head>
+	<link rel="icon" type="image/png" href="{% static 'nerdapp/img/icon.png' %}">
 
-	<body>
-		<header style="background-color: #04668d">
-			<!-- Encabezado Bootstrap -->
-			<br />
-			<nav class="navbar bg-body-tertiary" style="background-color: #fcfcfc">
-				<div class="container-fluid">
-					<a href="{% url 'index' %}" style="width: 25%; margin-left: 5%">
-						<img style="width: 100%" src="../../static/nerdapp/img/Logo.png"
-					/></a>
-					<form class="d-flex" role="search" style="margin-right: 1%; margin-left: 5%; display: flex"
+	<!-- Agrega el enlace a Bootstrap 5 CSS aquí -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+	{% load static %}
+	<link href="{% static 'nerdapp/css/login.css' %} " rel="stylesheet" />
+	<link href="{% static 'nerdapp/css/singup.css' %} " rel="stylesheet" />
+	<link href="{% static 'nerdapp/css/estilos.css' %} " rel="stylesheet" />
+	<!-- Agrega aquí tus etiquetas meta, estilos y scripts comunes -->
+</head>
+
+<body>
+	<header style="background-color: #04668d">
+		<!-- Encabezado Bootstrap -->
+		<br />
+		<nav class="navbar bg-body-tertiary" style="background-color: #fcfcfc">
+			<div class="container-fluid">
+				<a href="{% url 'index' %}" style="width: 25%; margin-left: 5%">
+					<img style="width: 100%" src="../../static/nerdapp/img/Logo.png" /></a>
+				<form class="d-flex" role="search" style="margin-right: 1%; margin-left: 5%; display: flex"
 					action="{% url 'buscar' %}" method="get">
 					<input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"
 						style="width: 70%" name="q" />
 					<button class="btn fs-3" type="submit">
 						<i class="bi bi-search" style="color: #545f71"></i>
 					</button>
-						{% if user.is_authenticated %}
+					{% if user.is_authenticated %}
+
+					{% else %}
+					<div style="width: 50%; height: 3%; margin-left: 5%">
+						<a href="{% url 'login' %}"><i class="bi bi-person-circle fs-2"
+								style="padding: 10px; color: #545f71; margin-right: 5%"></i></a>
+						{% endif %}
+						<a href="{% url 'ver_carrito' %}">
+							<i class="bi bi-cart3 fs-2" style="padding-left: 10px; color: #545f71">
+							</i>
+						</a>
+					</div>
+				</form>
+			</div>
+		</nav>
+		<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #04668d; width: 100%">
+			<div class="container">
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+					aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav justify-content-center" style="width: 100%">
+						{% if user.is_staff %}
+						<li class="nav-item m-auto">
+							<a href="{% url 'vistaVenta' %}" class="navbar-brand">Informe</a>
+						</li>
+						<li class="nav-item m-auto">
+							<a href="" class="navbar-brand">Productos</a>
+						</li>
 
 						{% else %}
-						<div style="width: 50%; height: 3%; margin-left: 5%">
-							<a href="{% url 'login' %}"
-								><i
-									class="bi bi-person-circle fs-2"
-									style="padding: 10px; color: #545f71; margin-right: 5%"
-								></i
-							></a>
+						<li class="nav-item m-auto">
+							<a href="{% url 'videojuegos' %}" class="navbar-brand">Videojuegos</a>
+						</li>
+						<li class="nav-item m-auto">
+							<a href="{% url 'mangas' %}" class="navbar-brand">Mangas</a>
+						</li>
+						<li class="nav-item m-auto">
+							<a href="{% url 'animes' %}" class="navbar-brand">Animes</a>
+						</li>
+						<li class="nav-item m-auto">
+							<a href="{% url 'accesorios' %}" class="navbar-brand">Accesorios</a>
+						</li>
 						{% endif %}
-							<a href="{% url 'ver_carrito' %}">
-								<i
-									class="bi bi-cart3 fs-2"
-									style="padding-left: 10px; color: #545f71"
-								>
-								</i>
-							</a>
-						</div>
-					</form>
+						<li class="nav-item m-auto">
+							<a href="{% url 'listForo' %}" class="navbar-brand">Foro</a>
+						</li>
+						<li class="nav-item m-auto">
+							<a href="{% url 'listSubastas' %}" class="navbar-brand">Subastas</a>
+						</li>
+						{% if user.is_authenticated %}
+						<li class="nav-item m-auto">
+							<a href="{% url 'vistaBoleta' %}" class="navbar-brand">Mis Compras</a>
+						</li>
+						<li class="nav-item m-auto">
+							<a href="{% url 'logout' %}" class="navbar-brand">Cerrar sesión</a>
+						</li>
+						<li class="text-subtitulo m-auto" style="color: #fcfcfc">
+							{{ user.username }}
+						</li>
+						{% endif %}
+					</ul>
 				</div>
-			</nav>
-			<nav
-				class="navbar navbar-expand-lg navbar-dark"
-				style="background-color: #04668d; width: 100%"
-			>
-				<div class="container">
-					<button
-						class="navbar-toggler"
-						type="button"
-						data-bs-toggle="collapse"
-						data-bs-target="#navbarNav"
-						aria-controls="navbarNav"
-						aria-expanded="false"
-						aria-label="Toggle navigation"
-					>
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse" id="navbarNav">
-						<ul class="navbar-nav justify-content-center" style="width: 100%">
-							{% if user.is_staff %}
-							<li class="nav-item m-auto">
-								<a href="{% url 'vistaVenta' %}" class="navbar-brand"
-									>Informe</a
-								>
-							</li>
-							<li class="nav-item m-auto">
-								<a href="" class="navbar-brand">Productos</a>
-							</li>
+			</div>
+		</nav>
+	</header>
 
-							{% else %}
-							<li class="nav-item m-auto">
-								<a href="{% url 'videojuegos' %}" class="navbar-brand">Videojuegos</a>
-							</li>
-							<li class="nav-item m-auto">
-								<a href="{% url 'mangas' %}" class="navbar-brand">Mangas</a>
-							</li>
-							<li class="nav-item m-auto">
-								<a href="{% url 'animes' %}" class="navbar-brand">Animes</a>
-							</li>
-							<li class="nav-item m-auto">
-								<a href="{% url 'accesorios' %}" class="navbar-brand">Accesorios</a>
-							</li>
-							{% endif %}
-							<li class="nav-item m-auto">
-								<a href="{% url 'listForo' %}" class="navbar-brand">Foro</a>
-							</li>
-							<li class="nav-item m-auto">
-								<a href="{% url 'listSubastas' %}" class="navbar-brand"
-									>Subastas</a
-								>
-							</li>
-							{% if user.is_authenticated %}
-							<li class="nav-item m-auto">
-								<a href="{% url 'logout' %}" class="navbar-brand"
-									>Cerrar sesión</a
-								>
-							</li>
-							<li class="text-subtitulo m-auto" style="color: #fcfcfc">
-								{{ user.username }}
-							</li>
-							{% endif %}
-						</ul>
-					</div>
-				</div>
-			</nav>
-		</header>
+	<main class="container mt-4">
+		{% block contenido %}{% endblock contenido %}
+	</main>
 
-		<main class="container mt-4">
-			{% block contenido %}{% endblock contenido %}
-		</main>
+	<footer class="bg-light text-center py-3" style="color: #04668d; font-size: 20px; font-weight: 1;">
+		<!-- Aquí coloca tu contenido del pie de página, como información de contacto, enlaces sociales, etc. -->
+		Encuentranos en <br />Avenida Concha Y Toro, Av. San Carlos 1340
+	</footer>
 
-		<footer class="bg-light text-center py-3" style="color: #04668d; font-size: 20px; font-weight: 1;">
-			<!-- Aquí coloca tu contenido del pie de página, como información de contacto, enlaces sociales, etc. -->
-			Encuentranos en <br/>Avenida Concha Y Toro, Av. San Carlos 1340
-		</footer>
+	<!-- Agrega el enlace a Bootstrap 5 JavaScript y cualquier otro script necesario aquí -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+	{% block scriptsCode %}{% endblock scriptsCode %}
+	<!-- Agrega aquí tus scripts JavaScript comunes si es necesario -->
+</body>
 
-		<!-- Agrega el enlace a Bootstrap 5 JavaScript y cualquier otro script necesario aquí -->
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
-		{% block scriptsCode %}{% endblock scriptsCode %}
-		<!-- Agrega aquí tus scripts JavaScript comunes si es necesario -->
-	</body>
 </html>
