@@ -1,4 +1,5 @@
-{% extends "nerdapp/base.html" %} {% block contenido %}
+{% extends 'nerdapp/base.html' %} {% block title %}Foro{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}{% load crispy_forms_tags %}
 
 <div style="
 	background-color: #6264eb21;
@@ -42,7 +43,17 @@
 		</div>
 
 		<div style="text-align: start">
-			<div class="subasta-title">{{ p.titulo_publicacion}}</div>
+			<div class="row">
+				<div class="col">
+					<div class="subasta-title">{{ p.titulo_publicacion}}</div>
+				</div>
+				<div class="col-1" style="text-align: end; margin: auto;">
+					<h4 class="reportar-icon-publicacion" data-comentario-id="{{ p.id_publicacion}}">
+						<i class="bi bi-exclamation-octagon"></i>
+					</h4>
+				</div>
+			</div>
+
 
 			<div class="col" style="background-color: #6264eb21;
 				border: 1px solid #ddd;border-radius: 5px; padding: 2%; ">
@@ -58,35 +69,51 @@
 						<div class="row">
 							<div class="col-11">
 								<input class="form-control me-2" type="text" style="margin: 1%" id="comentario"
-									name="comentario" required />
+									name="comentario" required oninput="contarCaracteres()">
+
 							</div>
 							<div class="col" style=" text-align: start; margin: auto;">
-								<button type="submit"><i class="i bi-send"
+								<button type="submit" id="botonEnviar"><i class="bi bi-send"
 										style="color: #545f71; margin: 1%;"></i></button>
+
 							</div>
 							<input type="hidden" id="usuario_id_usuario" name="usuario_id_usuario"
 								value="{{ user.id }}" />
 							<input type="hidden" id="estado_comentario" name="estado_comentario" value="activo" />
 							<input type="hidden" id="publicacion_id_publicacion" name="publicacion_id_publicacion"
 								value="{{p.id_publicacion}}" />
+
 						</div>
 					</form>
-					<small><small><i>Respuestas de Usuarios</i></small></small>
+					<div class="row">
+						<div class="col"><small><small><i>Respuestas de Usuarios</i></small></small>
+						</div>
+						<div class="col" style="text-align: end;"><small><small id="caracteresRestantes">200 caracteres
+									restantes</small></small></div>
+					</div>
+
 					{% for c in comentarios %}
 					{% if c.publicacion_id_publicacion.id_publicacion == p.id_publicacion %}
-
+					<input class="id_publicacion" type="hidden" id="id_publicacion" name="id_publicacion"
+						value="{{ p.id_publicacion }}" />
 					<div class="row" style="background-color: #6264eb21;
 											border: 1px solid #ddd;border-radius: 5px; padding: 2%;
-											width: 95%; margin-bottom: 1%;">
+											width: 100%; margin-bottom: 1%;">
 						<div class=" col-2" style="background-color: #6264eb21; padding: 1%; text-align: center
 						; border-radius: 20px;">
 							{{c.usuario_id_usuario.nombre_usuario}}</div>
 						<div class=" col" style="border-left: 1px solid #6264eb21; margin: 1%;">{{ c.comentario }}
 						</div>
 						<div class=" col-1" style="border-left: 1px solid #6264eb21; margin: 1%;">
-							<small><small>{{c.fecha_comentario}}</small></small>
+							<small><small>{{c.fecha_comentario}} </small></small>
+						</div>
+						<div class="col-1" style="text-align: end;">
+							<h4 class="reportar-icon" data-comentario-id="{{ c.id_comentario}}">
+								<i class="bi bi-exclamation-octagon"></i>
+							</h4>
 						</div>
 					</div>
+
 					{% endif %}
 					{% endfor %}
 				</div>
@@ -101,3 +128,60 @@
 	{% endfor %}
 </div>
 {% endblock contenido %}
+{% block scriptsCode %}
+<!-- Agrega esto antes de tu script personalizado -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+	function contarCaracteres() {
+		var comentario = document.getElementById("comentario");
+		var caracteresRestantes = 200 - comentario.value.length;
+
+		document.getElementById("caracteresRestantes").innerHTML = caracteresRestantes + " caracteres restantes";
+
+		// Deshabilitar el botón si se supera el límite
+		var botonEnviar = document.getElementById("botonEnviar");
+		botonEnviar.disabled = comentario.value.length > 200;
+
+		// Limitar la longitud del comentario a 200 caracteres
+		if (comentario.value.length > 200) {
+			comentario.value = comentario.value.substring(0, 200);
+		}
+	}
+</script>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+
+		var reportarIconsPublicacion = document.querySelectorAll(".reportar-icon-publicacion");
+		var reportarIcons = document.querySelectorAll(".reportar-icon");
+		var reportarTema = document.getElementById("id_publicacion").value;
+		reportarIcons.forEach(function (icon) {
+			icon.addEventListener("click", function () {
+				var comentarioId = icon.dataset.comentarioId;
+				var confirmacion = confirm("¿Está seguro de reportar esta publicación?");
+				console.log(comentarioId, reportarTema)
+				if (confirmacion) {
+					console.log("entro")
+					window.location.href = "/reportarComentario/" + comentarioId + "/" + reportarTema + "/";
+
+				}
+			});
+		});
+		reportarIconsPublicacion.forEach(function (icon) {
+			icon.addEventListener("click", function () {
+				var comentarioId = 0;
+				var confirmacion = confirm("¿Está seguro de reportar esta publicación?");
+				console.log(comentarioId, reportarTema)
+				if (confirmacion) {
+					console.log("entro")
+					window.location.href = "/reportarComentario/" + comentarioId + "/" + reportarTema + "/";
+
+				}
+			});
+		});
+
+
+
+	});
+</script>
+
+{% endblock scriptsCode %}

@@ -238,8 +238,8 @@ def paymentFailed(request, id_producto):
 
 class listarYComentarForo(View):
     def get(self, request, *args, **kwargs):
-        publicaciones = Publicacion.objects.all().order_by('-fecha_publicacion')
-        comentarios = Comentario.objects.all().order_by('-fecha_comentario')
+        publicaciones = Publicacion.objects.filter(estado_publicacion='activo').order_by('-fecha_publicacion')
+        comentarios = Comentario.objects.filter(estado_comentario='activo').order_by('-fecha_comentario')
         context = {
                 'publicaciones': publicaciones,
                 'comentarios': comentarios
@@ -298,7 +298,59 @@ def agregarForo(request):
         else:
         #print("formulario no valido")
             data["form"] = formulario        
-            return render(request, 'foro/agregarForo.html',data)
+    return render(request, 'foro/agregarForo.html',data)
+
+"""def reportar_comentario(request):
+    if request.method == 'POST':
+        print("esta en view")
+        comentario_id = request.POST.get('comentarioId')
+        try:
+            comentario = Comentario.objects.get(id_comentario=comentario_id)
+            comentario.estado_comentario = 'denunciado'
+            comentario.save()
+            return JsonResponse({'success': True})
+        except Comentario.DoesNotExist:
+            return JsonResponse({'error': 'Comentario no encontrado'}, status=404)
+
+    return JsonResponse({'error': 'Solicitud no válida'}, status=400)
+
+def reportar_comentario(request):
+    if request.method == 'POST':
+        print("esta en view")
+        comentario_id = request.POST.get('comentario_id')
+        publicacion_id = request.POST.get('publicacion_id')
+
+        comentario = Comentario.objects.get(id_comentario=comentario_id)
+        comentario.estado_comentario = 'denunciado'
+        comentario.save()
+
+        return JsonResponse({'status': 'success', 'publicacion_id': publicacion_id})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Método no permitido'})"""
+
+def reportarComentario(request, comentarioID, publicacionID):
+    if(comentarioID != 0):
+        print(comentarioID, publicacionID)
+        comentario = Comentario.objects.get(id_comentario=comentarioID)
+        comentario.estado_comentario = 'denunciado'
+        comentario.save()
+        
+        print(comentario)
+        # Renderiza la plantilla directamente, no es necesario pasar args
+        
+    else:
+        print(comentarioID, publicacionID)
+        publicacion = Publicacion.objects.get(id_publicacion=int(publicacionID))
+        publicacion.estado_publicacion = 'denunciado'
+        publicacion.save()
+        # Renderiza la plantilla directamente, no es necesario pasar args
+    context={
+            'publicacionID':publicacionID
+        }
+    return render(request, 'foro/reportarForo.html', context)
+    
+
+
 
 def vistaVenta(request):
     diccAlias, diccNombre = diccProductos()

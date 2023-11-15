@@ -1,0 +1,24 @@
+{% extends "nerdapp/base.html" %} {% block contenido %}
+<div class="row">
+    <div class="col-12 col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-body mx-auto pt-4">
+                <h5 class="card-title">Comprobante de Participación</h5>
+                <p class="card-text">
+                    Reportaste un comentario en el foro <strong>{{publicacionID}}</strong><br />
+                    <hr>
+
+                <div style="text-align: center;">
+                    <i>
+                        Gracias por ser parte de la comunidad<br />
+                        Atte Equipo Nerdcoud Store
+                    </i>
+                </div>
+
+                </p>
+            </div>
+        </div>
+        <br />
+    </div>
+</div>
+{% endblock contenido %}
