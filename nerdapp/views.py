@@ -609,7 +609,7 @@ def agregar_al_carrito(request, id_producto):
         return render(request, "Producto no encontrado", status=404)
 
     # Obtén el carrito del usuario actual o crea uno si no existe
-    carrito, creado = Carrito.objects.get_or_create(usuario_id_usuario=request.user.id, estado_pago='pendiente')
+    carrito, creado = Carrito.objects.get_or_create(request.user.id, estado_pago='pendiente')
 
     # Busca el producto en el carrito
     carrito_producto_existente = CarritoProducto.objects.filter(
