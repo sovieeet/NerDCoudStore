@@ -20,11 +20,14 @@ from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-
-
+from paypal.standard.ipn.signals import valid_ipn_received
+from django.views.decorators.csrf import csrf_exempt
+from paypal.standard.ipn.views import ipn
 from openpyxl import Workbook
 from openpyxl.utils import get_column_letter
 from nerdcoudstore.settings import EMAIL_HOST_USER
+
+
 
 def index(request):
     productos = Producto.objects.all().order_by("-fecha_creacion")[:10]
@@ -260,12 +263,11 @@ def CheckOut(request, id_producto):
     return render(request, 'nerdapp/checkout.html', context)
 
 def PaymentSuccessful(request, id_carrito):
-
-    producto = Carrito.objects.get(id_carrito=id_carrito)
-    usuario = Carrito.objects.get(usuario_id_usuario=request.user.id, estado_pago='pagado')
+    carrito = Carrito.objects.get(id_carrito=id_carrito)
+    usuario = Usuario.objects.get(id_usuario=request.user.id)
 
     subject = "Compra Exitosa"
-    message = f"Estimado/a  ¡su compra de {producto.total_carrito} ha sido exitosa!"
+    message = f"Estimado/a  ¡su compra de {carrito.total_carrito} ha sido exitosa!"
     email = usuario.correo
     recipient_list = [email]
 
@@ -273,16 +275,16 @@ def PaymentSuccessful(request, id_carrito):
     <p>Encuéntranos en Avenida Concha Y Toro, Av. San Carlos 1340</p>"""
 
     send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list, fail_silently=True, html_message=html_message)
-    carritoAnterior = Carrito.objects.get(usuario_id_usuario=usuario.id_usuario)
-    carritoAnterior.estado_pago='pagado'
-    carritoAnterior.save()
+    
+    carrito.estado_pago='pagado'
+    carrito.save()
     carritoNuevo = Carrito.objects.create(
                 usuario_id_usuario = usuario,
                 estado_pago = 'pendiente',
                 total_carrito = 0
             )
     carritoNuevo.save()
-    return render(request, 'nerdapp/payment-success.html', {'carrito': producto})
+    return render(request, 'nerdapp/payment-success.html')
 
 def paymentFailed(request, id_carrito):
 
@@ -698,7 +700,7 @@ def agregar_al_carrito(request, id_producto):
 
     # Obtén el carrito del usuario actual o crea uno si no existe
     carrito, creado = Carrito.objects.get_or_create(usuario_id_usuario=request.user.id, estado_pago='pendiente')
-
+    print(carrito)
     # Busca el producto en el carrito
     carrito_producto_existente = CarritoProducto.objects.filter(
         id_carrito_id=carrito,
@@ -727,7 +729,7 @@ def agregar_al_carrito(request, id_producto):
     return render(request, 'carrito/agregado_al_carrito.html')  
 
 def ver_carrito(request):
-  
+    carrito = Carrito.objects.get(usuario_id_usuario=request.user.id, estado_pago='pendiente')
     carrito_items = CarritoProducto.objects.filter(id_carrito_id__usuario_id_usuario=request.user.id, id_carrito_id__estado_pago='pendiente')
     carrito_total = carrito_items.aggregate(Sum('total_por_producto'))['total_por_producto__sum'] or 0
 
@@ -744,7 +746,7 @@ def ver_carrito(request):
         'invoice': uuid.uuid4(),
         'currency_code': 'USD',
         'notify_url': f"http://{host}{reverse('paypal-ipn')}",
-        'return_url': f"http://{host}/",
+        'return_url': f"http://{host}/payment-success/{carrito.id_carrito}", 
     }
 
     paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
@@ -775,3 +777,35 @@ def eliminar_del_carrito(request, id_carrito_producto):
 
     # Redirige a la vista del carrito
     return redirect('ver_carrito')
+
+def paypal_ipn(request):
+
+    usuario=Usuario.objects.get(id_usuario=request.user.id)
+    # Procesa la notificación de pago de PayPal y actualiza el estado del carrito
+    if request.method == "POST" and request.POST.get("txn_id"):
+        ipn(request)
+        carritoAnterior = Carrito.objects.get(usuario_id_usuario=usuario.id_usuario)
+        carritoAnterior.estado_pago='pagado'
+        carritoAnterior.save()
+        carritoNuevo = Carrito.objects.create(
+                    usuario_id_usuario = usuario,
+                    estado_pago = 'pendiente',
+                    total_carrito = 0
+                )
+        carritoNuevo.save()
+        # Agrega aquí la lógica para actualizar el estado del carrito después de la notificación de PayPal
+
+    # Devuelve una respuesta adecuada a PayPal
+    return HttpResponse("OK")
+
+"""def manejar_notificacion_pago(sender, **kwargs):
+    ipn_obj = sender
+
+    # Procesa la notificación de pago y actualiza el estado del carrito
+    if ipn_obj.payment_status == 'Completed':
+        # Actualiza el estado del carrito a "pagado"
+        # Puedes utilizar la información de ipn_obj para identificar y actualizar el carrito correspondiente
+        # Por ejemplo: Carrito.objects.filter(id=carrito_id).update(estado_pago='pagado')
+        pass
+
+valid_ipn_received.connect(manejar_notificacion_pago)"""
