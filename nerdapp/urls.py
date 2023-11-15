@@ -25,7 +25,11 @@ urlpatterns = [
     path('vistaBoleta/', views.vistaBoleta, name='vistaBoleta'),
     path('descargar_boleta_pdf/<int:boleta_id>/', views.descargarBoleta_pdf, name='descargar_boleta_pdf'),
     path('descargar_boletas_excel/', views.descargarExcelBoletas, name='descargar_boletas_excel'),
+    path('reportarComentario/<int:comentarioID>/<int:publicacionID>/', views.reportarComentario, name='reportarComentario'),
 
+
+    #path('reportar_comentario/<int:comentario_id>/<int:publicacion_id>', views.reportarComentario, name='reportar_comentario'),
+    
 
 ]
 
