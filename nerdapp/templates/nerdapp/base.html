@@ -34,21 +34,13 @@
 					<a href="{% url 'index' %}" style="width: 25%; margin-left: 5%">
 						<img style="width: 100%" src="../../static/nerdapp/img/Logo.png"
 					/></a>
-					<form
-						class="d-flex"
-						role="search"
-						style="margin-right: 1%; margin-left: 5%; display: flex"
-					>
-						<input
-							class="form-control me-2"
-							type="search"
-							placeholder="Buscar"
-							aria-label="Search"
-							style="width: 70%"
-						/>
-						<button class="btn fs-3" type="submit">
-							<i class="bi bi-search" style="color: #545f71"></i>
-						</button>
+					<form class="d-flex" role="search" style="margin-right: 1%; margin-left: 5%; display: flex"
+					action="{% url 'buscar' %}" method="get">
+					<input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"
+						style="width: 70%" name="q" />
+					<button class="btn fs-3" type="submit">
+						<i class="bi bi-search" style="color: #545f71"></i>
+					</button>
 						{% if user.is_authenticated %}
 
 						{% else %}
