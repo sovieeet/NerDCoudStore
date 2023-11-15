@@ -17,7 +17,8 @@ class Producto(models.Model):
     cantidad_disponible = models.IntegerField(default=0)
     fecha_creacion = models.DateTimeField(auto_now_add=True)
     imagen = models.ImageField(upload_to="productos", null=True)
-    
+    categoria_id_categoria = models.ForeignKey(Categoria, null=False,  blank=False, on_delete=models.CASCADE)
+
     def __str__(self):
         return self.nombre
      
@@ -132,3 +133,14 @@ class Venta(models.Model):
 
     def __str__(self):
         return str(self.id_venta)
+    
+class Delivery(models.Model):
+    id_delivery = models.AutoField(primary_key=True)
+    direccion = models.CharField(max_length=200)
+    numero = models.IntegerField()
+    descripcion = models.CharField(max_length=200, null=True)
+    usuario_id_usuario = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE)
+    venta_id_venta = models.ForeignKey(Venta, null=False, blank=False, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.id_delivery)

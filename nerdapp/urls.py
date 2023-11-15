@@ -21,13 +21,13 @@ urlpatterns = [
     path('products/', views.ProductView, name='products'),
     path('listForo/', views.listarYComentarForo.as_view(), name='listForo'),
     path('agregarForo/', views.agregarForo, name='agregarForo'),
-     path('agregar_al_carrito/<int:id_producto>/', views.agregar_al_carrito, name='agregar_al_carrito'),
-    path('ver_carrito/', views.ver_carrito, name='ver_carrito'),
-    path('ver_carrito/', views.ver_carrito, name='ver_carrito'),
-    path('eliminar_del_carrito/<int:id_carrito_producto>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
-
-
-
+    path('vistaBoleta/', views.vistaBoleta, name='vistaBoleta'),
+    path('descargar_boleta_pdf/<int:boleta_id>/', views.descargarBoleta_pdf, name='descargar_boleta_pdf'),
+    path('descargar_boletas_excel/', views.descargarExcelBoletas, name='descargar_boletas_excel'),
+    path('videojuegos/', views.videojuegos, name='videojuegos'),
+    path('mangas/', views.mangas, name='mangas'),
+    path('animes/', views.animes, name='animes'),
+    path('accesorios/', views.accesorios, name='accesorios'),
 ]
 
 if settings.DEBUG:
