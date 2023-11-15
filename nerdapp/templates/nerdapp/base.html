@@ -49,6 +49,9 @@
 						<button class="btn fs-3" type="submit">
 							<i class="bi bi-search" style="color: #545f71"></i>
 						</button>
+						{% if user.is_authenticated %}
+
+						{% else %}
 						<div style="width: 50%; height: 3%; margin-left: 5%">
 							<a href="{% url 'login' %}"
 								><i
@@ -56,6 +59,7 @@
 									style="padding: 10px; color: #545f71; margin-right: 5%"
 								></i
 							></a>
+						{% endif %}
 							<a href="{% url 'ver_carrito' %}">
 								<i
 									class="bi bi-cart3 fs-2"

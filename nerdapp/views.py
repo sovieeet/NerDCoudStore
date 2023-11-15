@@ -538,100 +538,6 @@ def descargar_excel(request):
 
     return response
 
-def agregar_al_carrito(request, id_producto):
-    # Obtén el producto con el ID proporcionado o redirige si no existe
-    try:
-        producto = Producto.objects.get(pk=id_producto)
-    except Producto.DoesNotExist:
-        return render(request, "Producto no encontrado", status=404)
-
-    # Obtén el carrito del usuario actual o crea uno si no existe
-    carrito, creado = Carrito.objects.get_or_create(usuario_id_usuario=request.user.id, estado_pago='pendiente')
-
-    # Busca el producto en el carrito
-    carrito_producto_existente = CarritoProducto.objects.filter(
-        id_carrito_id=carrito,
-        id_producto_id=producto
-    ).first()
-
-    if carrito_producto_existente:
-        # Si el producto ya está en el carrito, incrementa la cantidad
-        carrito_producto_existente.cantidad_producto += 1
-        carrito_producto_existente.total_por_producto = carrito_producto_existente.cantidad_producto * producto.precio
-        carrito_producto_existente.save()
-    else:
-        # Si el producto no está en el carrito, crea un nuevo CarritoProducto
-        nuevo_carrito_producto = CarritoProducto(
-            id_producto_id=producto,
-            cantidad_producto=1,
-            total_por_producto=producto.precio,
-            id_carrito_id=carrito
-        )
-        nuevo_carrito_producto.save()
-
-    # Actualiza el total del carrito
-    carrito.total_carrito += producto.precio
-    carrito.save()
-
-   
-
-  
-    return render(request, 'carrito/agregado_al_carrito.html')  
-
-def ver_carrito(request):
-  
-    carrito_items = CarritoProducto.objects.filter(id_carrito_id__usuario_id_usuario=request.user.id, id_carrito_id__estado_pago='pendiente')
-    carrito_total = carrito_items.aggregate(Sum('total_por_producto'))['total_por_producto__sum'] or 0
-
-    clp_a_usd = 0.0011
-    monto_usd = carrito_total * clp_a_usd
-
-    host = request.get_host()
-
-    paypal_checkout = {
-        'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': monto_usd,
-        'item_name': 'Compra en Mi Tienda',
-        'invoice': uuid.uuid4(),
-        'currency_code': 'USD',
-        'notify_url': f"http://{host}{reverse('paypal-ipn')}",
-        
-    }
-
-    paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
-
-    context = {
-        'carrito_items': carrito_items,
-        'carrito_total': carrito_total,
-        'paypal': paypal_payment,
-    }
-
-    return render(request, 'carrito/ver_carrito.html', context)
-
-   
-
-def eliminar_del_carrito(request, id_carrito_producto):
-    try:
-        # Obtén el CarritoProducto con el ID proporcionado
-        carrito_producto = CarritoProducto.objects.get(pk=id_carrito_producto)
-    except CarritoProducto.DoesNotExist:
-        # Si no se encuentra el CarritoProducto, puedes redirigir o manejar el error de alguna manera
-        return redirect('nombre_de_tu_vista_de_error')
-
-    # Resta el total del carrito antes de eliminar el producto
-    carrito = carrito_producto.id_carrito_id
-    carrito.total_carrito -= carrito_producto.total_por_producto
-    carrito.save()
-
-    # Elimina el CarritoProducto
-    carrito_producto.delete()
-
-    # Redirige a la vista del carrito
-    return redirect('ver_carrito')
-
-
-
-
 def infoBoletas(id_usuario):
     carritosUsuario = Carrito.objects.filter(
         usuario_id_usuario=id_usuario,
@@ -838,6 +744,7 @@ def ver_carrito(request):
         'invoice': uuid.uuid4(),
         'currency_code': 'USD',
         'notify_url': f"http://{host}{reverse('paypal-ipn')}",
+        'return_url': f"http://{host}/",
     }
 
     paypal_payment = PayPalPaymentsForm(initial=paypal_checkout)
