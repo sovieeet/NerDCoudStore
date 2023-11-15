@@ -18,10 +18,26 @@
 
     {% if resultados %}
     <ul>
-        {% for resultado in resultados %}
-        <li>{{ resultado.nombre }}</li>
-        <!-- Ajusta 'tu_campo' según el nombre del campo que deseas mostrar -->
-        {% endfor %}
+        <div class="productos-container">
+            <div class="productos-list">
+                {% for p in resultados %}
+                <div class="product-item">
+                    <div class="product-image">
+                        {% if p.imagen %}
+                        <img src="{{ p.imagen.url }}" alt="img product" />
+                        </a><br>
+                        {% endif %}
+                    </div>
+                    <div class="product-details">
+                        <a href="{% url 'checkout' p.id_producto %}" class="product-title"
+                            style="text-decoration: none; color: #04668D">
+                            {{ p.nombre | title }}</a>
+                        <p class="product-price">${{ p.precio |intcomma }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </ul>
     {% else %}
     <p>No se encontraron resultados.</p>
