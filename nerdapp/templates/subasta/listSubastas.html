@@ -4,17 +4,22 @@
 <!-- Contenedor principal utilizando clases de Bootstrap -->
 <div class="container">
 	<div class="row justify-content-end">
-		<div class="col-8" style="text-align: start">
-			<div class="row row-cols-3 justify-content-end">
+		<div class="col-8" style="text-align: start ">
+			<div class="row justify-content-end">
 				<div class="col-5 col-md-3">Buscar Subasta</div>
-				<div class="col-5 col-md-7">
-					<input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"
-						style="width: 100%" />
-				</div>
-				<div class="col-2 col-md-2">
-					<button class="btn" type="submit">
-						<i class="bi bi-search" style="color: #545f71"></i>
-					</button>
+				<div class="col">
+					<form class="d-flex" role="search" style="margin-right: 1%; margin-left: 5%; display: flex; 
+						" action="{% url 'buscarSubasta' %}" method="get">
+						<div class="col">
+							<input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"
+								style="width: 100%" name="q" />
+						</div>
+						<div class="col-1">
+							<button class="btn fs-3" type="submit">
+								<i class="bi bi-search" style="color: #545f71"></i>
+							</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>

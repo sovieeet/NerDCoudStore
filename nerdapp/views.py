@@ -604,3 +604,14 @@ def buscar(request):
 
     return render(request, 'busqueda/busqueda.html', {'resultados': resultados, 'query': query})
 
+def buscarSubasta(request):
+    query = request.GET.get('q')
+
+    if query:
+        # Realiza la búsqueda en tu modelo (ajusta esto según tu modelo)
+        resultados = Subasta.objects.filter(nombre__icontains=query)
+    else:
+        resultados = []
+
+    return render(request, 'busqueda/busquedaSubasta.html', {'subastas': resultados, 'query': query})
+
