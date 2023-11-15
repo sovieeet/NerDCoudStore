@@ -1,0 +1,152 @@
+{% extends 'nerdapp/base.html' %} {% block title %}Index{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}
+
+<!-- Contenedor principal utilizando clases de Bootstrap -->
+<div class="container">
+    <div class="row justify-content-end">
+        <div class="col-8" style="text-align: start">
+            <div class="row justify-content-end">
+                <div class="col-5 col-md-3">Buscar Subasta</div>
+                <div class="col">
+                    <form class="d-flex" role="search" style="margin-right: 1%; margin-left: 5%; display: flex; 
+                						" action="{% url 'buscarSubasta' %}" method="get">
+                        <div class="col">
+                            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"
+                                style="width: 100%" name="q" />
+                        </div>
+                        <div class="col-1">
+                            <button class="btn fs-3" type="submit">
+                                <i class="bi bi-search" style="color: #545f71"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="col-4" style="text-align: center">
+            <a role="button" href="{% url 'agregarSubasta' %}" class="btn-crear p-3"
+                style="text-decoration: none">Agregar</a>
+        </div>
+        {% endif %}
+    </div>
+    <br />
+    <h2 class="text-subtitulo" style="text-align: left">Listado de subastas</h2>
+    <div id="mensaje" class="{% if mensaje %}alert alert-danger fade show{% else %}d-none{% endif %}" role="alert">
+        <strong>{{ mensaje }}</strong>
+    </div>
+
+    <div class="row">
+        {% for s in subastas %}
+        <div class="col-sm-4" style="margin-bottom: 20px; text-align: center">
+            <div class="subasta-image">
+                {% if s.imagen %}
+                <img src="{{ s.imagen.url }}" alt="img subasta" />
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-sm-8" style="
+				background-color: #6264eb21;
+				border: 1px solid #ddd;
+				margin-bottom: 20px;
+			">
+            <div style="text-align: end">
+                <small><small>N°: <i>{{ s.id_subasta}}</i></small></small>
+            </div>
+            <div class="subasta-details" data-fecha="{{ s.fecha_termino | title }}"
+                data-hora="{{ s.hora_termino | title }}">
+                <h3 class="subasta-title">{{ s.nombre | title }}</h3>
+                <p class="subasta-info">
+                    {{ s.descripcion}}<br />
+                    Oferta mínima ${{ s.precio_inicial|intcomma}}<br />Oferta más alta
+                </p>
+                <p class="subasta-price">${{ s.precio_mas_alto |intcomma }}</p>
+                {% if user.is_authenticated %}
+
+                <form action="" method="post" class="input-group mb-3">
+                    {% load crispy_forms_tags %} {% csrf_token %}
+
+                    <input <input type="hidden" id="subasta_id" name="subasta_id" value="{{ s.id_subasta }}" />
+                    <input type="hidden" id="usuario_id" name="usuario_id" value="{{ user.id }}" />
+                    <input type="number" class="form-control" name="monto" placeholder="Ingrese el monto" required />
+                    <input type="submit" value="Ofertar" id="button-addon2" class="btn btn-outline-secondary" />
+                </form>
+                {% else %}
+                <h3 class="subasta-title">Inicie sesion para participar</h3>
+
+                {% endif %}
+
+                <p class="subasta-info">
+                    Tiempo limite: {{ s.fecha_termino }} a las {{ s.hora_termino }}
+                </p>
+                <p class="tiempo-restante"></p>
+            </div>
+        </div>
+        <hr />
+        {% endfor %}
+    </div>
+</div>
+{% endblock contenido %} {% block scriptsCode %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const subastaDetails = document.querySelectorAll(".subasta-details");
+        let time = 0;
+        function actualizarTiempoRestante() {
+            subastaDetails.forEach(function (subasta) {
+                const fechaTermino = subasta.dataset.fecha;
+                const horaTermino = subasta.dataset.hora; // Agrega '00:' antes de la hora
+
+                // Verificar si fecha y hora son válidos
+                if (fechaTermino && horaTermino) {
+                    const fh = fechaTermino + " " + horaTermino;
+                    const fechaHoraTermino = Date.parse(fh);
+                    const ahora = new Date();
+                    const tiempoRestante = fechaHoraTermino - ahora;
+
+                    const dias = Math.floor(tiempoRestante / (1000 * 60 * 60 * 24));
+                    const horas = Math.floor(
+                        (tiempoRestante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+                    );
+                    const minutos = Math.floor(
+                        (tiempoRestante % (1000 * 60 * 60)) / (1000 * 60)
+                    );
+                    const segundos = Math.floor((tiempoRestante % (1000 * 60)) / 1000);
+
+                    const tiempoRestanteTexto = `${dias}d ${horas}h ${minutos}m ${segundos}s`;
+
+                    // Buscar el elemento que contiene el tiempo restante y actualizar su contenido
+
+                    time = tiempoRestante;
+                    if (time <= 0) {
+                        const inputOferta = subasta.querySelector(".form-control");
+                        const botonOfertar = subasta.querySelector(
+                            ".btn-outline-secondary"
+                        );
+                        inputOferta.style.display = "none";
+                        botonOfertar.style.display = "none";
+                    } else {
+                        const tiempoRestanteElement =
+                            subasta.querySelector(".tiempo-restante");
+                        tiempoRestanteElement.textContent = `Tiempo restante: ${tiempoRestanteTexto}`;
+                    }
+                }
+            });
+        }
+
+        // Llamar a la función inicialmente para mostrar el tiempo restante actual
+        actualizarTiempoRestante();
+
+        // Actualizar el tiempo restante cada segundo
+        setInterval(actualizarTiempoRestante, 1000);
+    });
+    const mensajeElement = document.getElementById("mensaje");
+    if (mensajeElement.textContent.trim() !== "") {
+        mensajeElement.classList.remove("d-none");
+        // Muestra la alerta por 3 segundos y luego redirige la página
+        setTimeout(function () {
+            mensajeElement.classList.add("d-none");
+        }, 3000);
+    }
+</script>
+
+{% endblock scriptsCode %}

@@ -33,6 +33,8 @@ urlpatterns = [
     path('ver_carrito/', views.ver_carrito, name='ver_carrito'),
     path('eliminar_del_carrito/<int:id_carrito_producto>/', views.eliminar_del_carrito, name='eliminar_del_carrito'),
     path('reportarComentario/<int:comentarioID>/<int:publicacionID>/', views.reportarComentario, name='reportarComentario'),
+    path('buscar/', views.buscar, name='buscar'), 
+    path('buscarSubasta/', views.buscarSubasta, name='buscarSubasta'), 
     #path('reportar_comentario/<int:comentario_id>/<int:publicacion_id>', views.reportarComentario, name='reportar_comentario'),
     
 

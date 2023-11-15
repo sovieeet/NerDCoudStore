@@ -43,9 +43,10 @@
 			<div class="container-fluid">
 				<a href="{% url 'index' %}" style="width: 25%; margin-left: 5%">
 					<img style="width: 100%" src="../../static/nerdapp/img/Logo.png" /></a>
-				<form class="d-flex" role="search" style="margin-right: 1%; margin-left: 5%; display: flex">
+				<form class="d-flex" role="search" style="margin-right: 1%; margin-left: 5%; display: flex"
+					action="{% url 'buscar' %}" method="get">
 					<input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Search"
-						style="width: 70%" />
+						style="width: 70%" name="q" />
 					<button class="btn fs-3" type="submit">
 						<i class="bi bi-search" style="color: #04668d"></i>
 					</button>
@@ -60,6 +61,9 @@
 							<i class="bi bi-cart3 fs-2" style="padding-left: 10px; color: #04668d"></i></a>
 					</div>
 				</form>
+
+
+
 			</div>
 		</nav>
 		<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #04668d; width: 100%">
