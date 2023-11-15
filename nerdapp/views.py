@@ -592,3 +592,15 @@ def vistaBoleta(request):
         "listaVentaProducto":listaVentaProducto
     }
     return render(request, 'informe/vistaBoleta.html', context)
+
+def buscar(request):
+    query = request.GET.get('q')
+
+    if query:
+        # Realiza la búsqueda en tu modelo (ajusta esto según tu modelo)
+        resultados = Producto.objects.filter(nombre__icontains=query)
+    else:
+        resultados = []
+
+    return render(request, 'busqueda/busqueda.html', {'resultados': resultados, 'query': query})
+
