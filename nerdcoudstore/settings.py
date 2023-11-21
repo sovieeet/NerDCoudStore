@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'paypal.standard.ipn',
     'rest_framework',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
