@@ -278,12 +278,20 @@ def PaymentSuccessful(request, id_carrito):
     
     carrito.estado_pago='pagado'
     carrito.save()
+    now = datetime.now()
+    nuevaVenta = Venta.objects.create(
+        id_carrito_id = carrito,
+        total_venta = carrito.total_carrito,
+        fecha_venta=now,
+    )
+    nuevaVenta.save()
     carritoNuevo = Carrito.objects.create(
                 usuario_id_usuario = usuario,
                 estado_pago = 'pendiente',
                 total_carrito = 0
             )
     carritoNuevo.save()
+
     return render(request, 'nerdapp/payment-success.html')
 
 def paymentFailed(request, id_carrito):
@@ -566,19 +574,29 @@ def infoBoletas(id_usuario):
             listProductosCarritoUsuario.append([producto.nombre, producto.precio,pc['cantidad_producto'],producto.precio*pc['cantidad_producto'],c['id_carrito'],ventaCarrito.id_venta,fechaVenta, ventaCarrito.total_venta])
         #print(prodCar) #productos de carrito
         listaVentaProducto.append(listProductosCarritoUsuario)
+    
+    listaVentaProducto = sorted(listaVentaProducto, key=lambda x: x[0][-3], reverse=True)
     return listaVentaProducto
 
 def descargarBoleta_pdf(request, boleta_id):
-    listaVentaProducto = infoBoletas(request.user.id)
+    print("boleta_id ",boleta_id)
+    carritoBoleta = Carrito.objects.get(id_carrito=boleta_id)
+    carritoProductoBoleta = CarritoProducto.objects.filter(id_carrito_id=boleta_id).values()
+    ventaBoleta = Venta.objects.get(id_carrito_id=boleta_id)
+    print("carritoProductoBoleta ", carritoProductoBoleta)
+    dataBoleta=[]
+    for p in carritoProductoBoleta:
+        producto=Producto.objects.get(id_producto = p["id_producto_id_id"])
+        dataBoleta.append([producto.nombre,producto.precio,p["cantidad_producto"],p["cantidad_producto"]*producto.precio])
+    #listaVentaProducto = infoBoletas(request.user.id)
     now = datetime.now()
     current_month = str(now.month)
     current_year = str(now.year)
     fn = "boleta_" + str(boleta_id) + ".pdf"
-    #print(listaVentaProducto)
-    flattened_data = [item for sublist in listaVentaProducto for item in sublist]
+    """flattened_data = [item for sublist in listaVentaProducto for item in sublist]
     dataBoleta = [i[:4] for i in flattened_data]
     infoBoleta = [i[4:] for i in flattened_data][0]
-    print(infoBoleta)
+    print(infoBoleta)"""
 
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{fn}"'
@@ -588,8 +606,8 @@ def descargarBoleta_pdf(request, boleta_id):
     # Ajustar el margen entre el subtítulo y la tabla
     styles.add(ParagraphStyle(name='TableParagraph', parent=styles['Normal'], spaceAfter=12))
 
-    boleta_title = f"Boleta - {infoBoleta[1]}"
-    boleta_subTitle = f"Fecha Venta: {infoBoleta[2]}, Total Venta: {infoBoleta[3]}\n"
+    boleta_title = f"Boleta - {boleta_id}"
+    boleta_subTitle = f"Fecha Venta: {ventaBoleta.fecha_venta}, Total Venta: {ventaBoleta.total_venta}\n"
     data = [['Nombre', 'Precio Unitario', 'Cantidad', 'Precio Total']] + dataBoleta
     table_style = TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
                               ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -604,7 +622,7 @@ def descargarBoleta_pdf(request, boleta_id):
                Paragraph(boleta_subTitle, styles['TableParagraph']),
                  table])
 
-    return response   
+    return response 
 
 def descargarExcelBoletas(request):
     listaVentaProducto = infoBoletas(request.user.id)
@@ -632,8 +650,9 @@ def descargarExcelBoletas(request):
     return response
 
 def vistaBoleta(request):
-    listaVentaProducto = Venta.objects.filter(usuario_id_usuario2=request.user.id)
-    #print(listaVentaProducto)#lista de ventas con detalle de los productos
+    listaVentaProducto= infoBoletas(request.user.id)
+
+    print(listaVentaProducto)#lista de ventas con detalle de los productos
     context = {
         "listaVentaProducto":listaVentaProducto
     }
