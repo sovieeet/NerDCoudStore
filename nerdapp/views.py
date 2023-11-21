@@ -632,7 +632,7 @@ def descargarExcelBoletas(request):
     return response
 
 def vistaBoleta(request):
-    listaVentaProducto= infoBoletas(request.user.id)
+    listaVentaProducto = Venta.objects.filter(usuario_id_usuario2=request.user.id)
     #print(listaVentaProducto)#lista de ventas con detalle de los productos
     context = {
         "listaVentaProducto":listaVentaProducto
