@@ -22,12 +22,8 @@
                     </div>
             </div>
             </a>
-
         </div>
-
-
     </div>
-
 </div>
 {% for ventaProducto in listaVentaProducto %}
 <div class="card" style="margin-top: 1%;">
@@ -51,15 +47,11 @@
             <div class="col-sm-12 col-md-1" style="text-align: center;">
                 <a href="{% url 'descargar_boleta_pdf' ventaProducto.0.4 %}" title="Descargar PDF">
                     <h3><i class="bi bi-file-earmark-arrow-down" style="color: #545f71; margin: auto;">
-
                         </i></h3>
                 </a>
-
-
             </div>
         </div>
     </div>
-
     <div class="card-boddy">
         <table class="table">
             <thead>
@@ -82,8 +74,6 @@
             </tbody>
         </table>
     </div>
-
-
 </div>
 {% endfor %}
 </div>

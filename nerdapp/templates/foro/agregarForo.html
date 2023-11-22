@@ -3,18 +3,11 @@
 
 
 <form method="post" enctype="multipart/form-data">
-	<div style="
-							background-color: #6264eb21;
-							border: 1px solid #ddd;
-							margin-bottom: 20px;
-				border-radius: 5px; 
-						">
+	<div style="background-color: #6264eb21; border: 1px solid #ddd; margin-bottom: 20px; border-radius: 5px; ">
 		<br>
 		<div class="row">
-
 			<div class="col" style="text-align: center;">
 				<small><small>Autor Foro : <i>{{ user.username }}</i></small></small>
-
 			</div>
 			<div class="col-6">
 			</div>
@@ -22,7 +15,6 @@
 				<button type="submit" class="btn btn-secondary" style=" text-align: start;padding: 2% 10%; ">
 					Publicar en Foro
 				</button>
-
 			</div>
 			{% load crispy_forms_tags %} {% csrf_token %}
 			<div class="row" style="padding: 1% 3%;">
@@ -45,22 +37,5 @@
 				<input type="hidden" id="estado_publicacion" name="estado_publicacion" value="activo" />
 			</div>
 </form>
-
-<!--<div class="row" style="padding: 1% 3%;">
-			<hr>
-			<div class="col-4">
-				<div style="
-    font-size: 20px;
-    font-style: normal;">Título Publicación</div>
-			</div>
-			<div class="col-8">
-				<input class="form-control me-2" type="search" placeholder aria-label="Search" style="width: 100%" />
-			</div>
-			<br><br>
-			<div>
-				<textarea style="width: 100%;"></textarea>
-			</div>
-
-		</div>-->
 </div>
 {% endblock contenido %}

@@ -2,12 +2,7 @@
 {%block contenido %} {% load humanize %} {% load static %}{% load crispy_forms_tags %}
 
 <div style="
-	background-color: #6264eb21;
-	border: 1px solid #ddd;
-	margin-bottom: 20px;
-	border-radius: 5px; 
-	position: relative;
-">
+	background-color: #6264eb21; border: 1px solid #ddd; margin-bottom: 20px; border-radius: 5px; position: relative;">
 	<div class="row" style="padding: 2%; ">
 		<div class="col">
 			{% if user.is_authenticated %}
@@ -27,7 +22,6 @@
 <h2 class="text-subtitulo" style="text-align: left">Foro público</h2>
 <div class="row"></div>
 <div class="row">
-
 	{% for p in publicaciones %}
 	<div class="col" style="
 				background-color: #6264eb21;
@@ -41,7 +35,6 @@
 				<small><small><i>{{ p.fecha_publicacion}}</i></small></small>
 			</div>
 		</div>
-
 		<div style="text-align: start">
 			<div class="row">
 				<div class="col">
@@ -53,16 +46,12 @@
 					</h4>
 				</div>
 			</div>
-
-
 			<div class="col" style="background-color: #6264eb21;
 				border: 1px solid #ddd;border-radius: 5px; padding: 2%; ">
 				{{ p.descripcion_publicacion}}
 				<br><br>
 
-				<div style="text-align: start; overflow-y:scroll;
-        overflow-x:hidden; height:200px">
-
+				<div style="text-align: start; overflow-y:scroll; overflow-x:hidden; height:200px">
 					<small><small><i>Responder</i></small></small>
 					<form method="post" enctype="multipart/form-data">
 						{% load crispy_forms_tags %} {% csrf_token %}
@@ -70,19 +59,16 @@
 							<div class="col-11">
 								<input class="form-control me-2" type="text" style="margin: 1%" id="comentario"
 									name="comentario" required oninput="contarCaracteres()">
-
 							</div>
 							<div class="col" style=" text-align: start; margin: auto;">
 								<button type="submit" id="botonEnviar"><i class="bi bi-send"
 										style="color: #545f71; margin: 1%;"></i></button>
-
 							</div>
 							<input type="hidden" id="usuario_id_usuario" name="usuario_id_usuario"
 								value="{{ user.id }}" />
 							<input type="hidden" id="estado_comentario" name="estado_comentario" value="activo" />
 							<input type="hidden" id="publicacion_id_publicacion" name="publicacion_id_publicacion"
 								value="{{p.id_publicacion}}" />
-
 						</div>
 					</form>
 					<div class="row">
@@ -91,7 +77,6 @@
 						<div class="col" style="text-align: end;"><small><small id="caracteresRestantes">200 caracteres
 									restantes</small></small></div>
 					</div>
-
 					{% for c in comentarios %}
 					{% if c.publicacion_id_publicacion.id_publicacion == p.id_publicacion %}
 					<input class="id_publicacion" type="hidden" id="id_publicacion" name="id_publicacion"
@@ -113,23 +98,18 @@
 							</h4>
 						</div>
 					</div>
-
 					{% endif %}
 					{% endfor %}
 				</div>
 			</div>
-
 		</div>
-
-
 	</div>
-
 	<hr />
 	{% endfor %}
 </div>
 {% endblock contenido %}
 {% block scriptsCode %}
-<!-- Agrega esto antes de tu script personalizado -->
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 	function contarCaracteres() {
@@ -138,11 +118,10 @@
 
 		document.getElementById("caracteresRestantes").innerHTML = caracteresRestantes + " caracteres restantes";
 
-		// Deshabilitar el botón si se supera el límite
 		var botonEnviar = document.getElementById("botonEnviar");
 		botonEnviar.disabled = comentario.value.length > 200;
 
-		// Limitar la longitud del comentario a 200 caracteres
+
 		if (comentario.value.length > 200) {
 			comentario.value = comentario.value.substring(0, 200);
 		}
@@ -150,7 +129,6 @@
 </script>
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
-
 		var reportarIconsPublicacion = document.querySelectorAll(".reportar-icon-publicacion");
 		var reportarIcons = document.querySelectorAll(".reportar-icon");
 		var reportarTema = document.getElementById("id_publicacion").value;
@@ -162,7 +140,6 @@
 				if (confirmacion) {
 					console.log("entro")
 					window.location.href = "/reportarComentario/" + comentarioId + "/" + reportarTema + "/";
-
 				}
 			});
 		});
@@ -174,14 +151,9 @@
 				if (confirmacion) {
 					console.log("entro")
 					window.location.href = "/reportarComentario/" + comentarioId + "/" + reportarTema + "/";
-
 				}
 			});
 		});
-
-
-
 	});
 </script>
-
 {% endblock scriptsCode %}

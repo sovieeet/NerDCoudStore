@@ -122,7 +122,7 @@
 .product-item {
     position: relative;
     margin-bottom: 10px;
-    padding-bottom: 100px; /* Ajusta el espacio hacia abajo */
+    padding-bottom: 100px;
 }
 
 .product-image img {
@@ -138,12 +138,12 @@
 
 .carrito-icon {
     position: absolute;
-    bottom: -1px; /* Ajusta la posición del botón del carrito */
+    bottom: -1px;
     right: 75px;
     margin-bottom: 50px;
-    padding: 5px; /* Ajusta el espacio alrededor del botón del carrito */
+    padding: 5px;
     color: #fff;
-    background-color: #04668d; /* Fondo opcional para el botón */
-    border-radius: 50%; /* Opcional: para darle forma circular al botón */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Opcional: sombra al botón */
+    background-color: #04668d;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
