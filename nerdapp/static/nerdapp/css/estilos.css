@@ -130,6 +130,12 @@
     height: auto;
 }
 
+.productos-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
 .carrito-icon {
     position: absolute;
     bottom: -1px; /* Ajusta la posición del botón del carrito */
