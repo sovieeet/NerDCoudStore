@@ -16,6 +16,7 @@ urlpatterns = [
     path('participacionSubasta/<int:subasta_id>/<int:monto>/', views.participacionSubasta, name='participacionSubasta'),
     path('participacionForo/<int:id_publicacion>/', views.participacionForo, name='participacionForo'),
     path('checkout/<int:id_producto>/', views.CheckOut, name='checkout'),
+    path('ver_producto/<int:id_producto>/', views.ver_producto, name='ver_producto'),
     path('payment-success/<int:id_carrito>/', views.PaymentSuccessful, name='payment-success'),
     path('payment-failed/<int:id_carrito>/', views.paymentFailed, name='payment-failed'),
     path('products/', views.ProductView, name='products'),

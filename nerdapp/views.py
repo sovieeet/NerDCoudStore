@@ -817,6 +817,14 @@ def paypal_ipn(request):
     # Devuelve una respuesta adecuada a PayPal
     return HttpResponse("OK")
 
+def ver_producto(request, id_producto):
+    productos = Producto.objects.get(id_producto=id_producto)
+    context = {
+        'productos': productos,
+    }
+
+    return render(request, 'producto/ver_producto.html', context)
+
 """def manejar_notificacion_pago(sender, **kwargs):
     ipn_obj = sender
 
