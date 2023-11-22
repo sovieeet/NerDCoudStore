@@ -125,6 +125,11 @@
     padding-bottom: 100px; /* Ajusta el espacio hacia abajo */
 }
 
+.product-image img {
+    max-width: 100%;
+    height: auto;
+}
+
 .carrito-icon {
     position: absolute;
     bottom: -1px; /* Ajusta la posición del botón del carrito */
