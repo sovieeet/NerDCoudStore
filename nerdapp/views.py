@@ -291,8 +291,8 @@ def PaymentSuccessful(request, id_carrito):
                 total_carrito = 0
             )
     carritoNuevo.save()
-
-    return render(request, 'nerdapp/payment-success.html')
+    
+    return render(request, 'nerdapp/payment-success.html', {'carrito': id_carrito})
 
 def paymentFailed(request, id_carrito):
 

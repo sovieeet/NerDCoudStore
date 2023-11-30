@@ -1,4 +1,5 @@
-{% extends "nerdapp/base.html" %} {% block contenido %}
+{% extends 'nerdapp/base.html' %} {% block title %}Foro{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}{% load crispy_forms_tags %}
 <h2 class="text-subtitulo" style="text-align: left">Crear Publicación</h2>
 
 
@@ -25,19 +26,21 @@
 
 			</div>
 			{% load crispy_forms_tags %} {% csrf_token %}
-			<div class="row" style="padding: 1% 3%;">
-				<hr>
-				<div class="col-4">
+			<hr style="width: 80%; margin: auto;">
+			<br>
+			<div class="row">
+
+				<div class="col-4" style="padding-left:20px ;">
 					<div style="
 			    font-size: 20px;
 			    font-style: normal;">Título Publicación</div>
 				</div>
-				<div class="col-8">
-					<input class="form-control me-2" type="text" style="width:100%" id="titulo_publicacion"
-						name="titulo_publicacion" required />
+				<div class="col-7">
+					<input class="form-control me-2" type="text" id="titulo_publicacion" name="titulo_publicacion"
+						required />
 				</div>
 				<br><br>
-				<div>
+				<div style="padding-left:20px ;">
 					<textarea style="width: 100%;" id="descripcion_publicacion" name="descripcion_publicacion"
 						required></textarea>
 				</div>

@@ -33,22 +33,22 @@
 <div class="card" style="margin-top: 1%;">
     <div class="card-title" style="margin-top: 1%;">
         <div class="row">
-            <div class="col-sm-12 col-md">
+            <div class="col-sm-11 col-md">
                 <h4>Detalle de Venta</h4>
             </div>
-            <div class="col-sm-12 col-md" style="visibility: hidden;">
+            <div class="col-sm-11 col-md" style="visibility: hidden;">
                 <p>ID Carrito: {{ ventaProducto.0.4 }}</p>
             </div>
-            <div class="col-sm-12 col-md">
+            <div class="col-sm-11 col-md">
                 <p>Número Boleta: {{ ventaProducto.0.5}}</p>
             </div>
-            <div class="col-sm-12 col-md">
+            <div class="col-sm-11 col-md">
                 <p>Fecha Venta: {{ ventaProducto.0.6 }}</p>
             </div>
-            <div class="col-sm-12 col-md">
+            <div class="col-sm-11 col-md">
                 <p>Total Venta: {{ ventaProducto.0.7 }}</p>
             </div>
-            <div class="col-sm-12 col-md-1" style="text-align: center;">
+            <div class="col-sm-11 col-md-1" style="text-align: center;">
                 <a href="{% url 'descargar_boleta_pdf' ventaProducto.0.4 %}" title="Descargar PDF">
                     <h3><i class="bi bi-file-earmark-arrow-down" style="color: #545f71; margin: auto;">
 
