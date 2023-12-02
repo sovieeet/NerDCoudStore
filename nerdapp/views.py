@@ -291,8 +291,8 @@ def PaymentSuccessful(request, id_carrito):
                 total_carrito = 0
             )
     carritoNuevo.save()
-
-    return render(request, 'nerdapp/payment-success.html')
+    
+    return render(request, 'nerdapp/payment-success.html', {'carrito': id_carrito})
 
 def paymentFailed(request, id_carrito):
 
@@ -816,6 +816,14 @@ def paypal_ipn(request):
 
     # Devuelve una respuesta adecuada a PayPal
     return HttpResponse("OK")
+
+def ver_producto(request, id_producto):
+    productos = Producto.objects.get(id_producto=id_producto)
+    context = {
+        'productos': productos,
+    }
+
+    return render(request, 'producto/ver_producto.html', context)
 
 """def manejar_notificacion_pago(sender, **kwargs):
     ipn_obj = sender

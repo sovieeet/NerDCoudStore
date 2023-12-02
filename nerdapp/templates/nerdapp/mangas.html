@@ -39,7 +39,7 @@
 					{% endif %}
 				</div>
 				<div class="product-details">
-					<a href="{% url 'checkout' p.id_producto %}" class="product-title"
+					<a href="{% url 'ver_producto' p.id_producto %}" class="product-title"
 						style="text-decoration: none; color: #04668D">
 						{{ p.nombre | title }}</a>
 					<p class="product-price">${{ p.precio |intcomma }}</p>

@@ -1,0 +1,51 @@
+{% extends 'nerdapp/base.html' %} {% block title %}Vista Producto{% endblock title %}
+{%block contenido %} {% load humanize %} {% load static %}
+
+<!DOCTYPE html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ver prodcuto page</title>
+</head>
+
+<body>
+    <div style="width: 90%; background-color: #6264eb21;border: 1px solid #ddd;
+	border-radius: 5px; margin: auto; ">
+        <div class="row" style="padding: 5%;">
+            <div class="col-3">
+                {% if productos.imagen %}
+                <img src="{{ productos.imagen.url }}" alt="img product"
+                    style="width: 100%; border: #545f71 1px solid; border-radius: 5px;" />
+                {% endif %}
+            </div>
+            <div class="col-8">
+                <h1 class=" text-subtitulo" style="text-align: left"">{{productos.nombre}}</h1>
+                <div class=" product-container">
+                    <div class="productos">
+                        <img class="img" src="{{productos.imagen}}" alt="">
+                        <p>{{productos.nombre}}</p>
+                        <p>Descripción: <br>{{productos.descripcion}}</p>
+
+                        <h1>$ {{productos.precio}}</h1>
+                        <!-- <button>Purchase</button> -->
+
+                    </div>
+            </div>
+            <div class="row" style="text-align: end;">
+                <div class="col-8">
+                    <a href="{% url 'agregar_al_carrito' productos.id_producto %}">
+                        <i class="bi bi-cart-plus fs-2" style="padding-left: 10px; color: #04668d"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+
+</body>
+
+</html>
+{% endblock contenido %}
