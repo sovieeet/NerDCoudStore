@@ -21,20 +21,6 @@ class Producto(models.Model):
 
     def __str__(self):
         return self.nombre
-     
-class Region(models.Model):
-    id_region = models.AutoField(primary_key=True)
-    region = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.region
-class Comuna(models.Model):
-    id_comuna = models.AutoField(primary_key=True)
-    comuna = models.CharField(max_length=200)
-    region_id_region = models.ForeignKey(Region, null=False,  blank=False, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.comuna
 
 class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True)
