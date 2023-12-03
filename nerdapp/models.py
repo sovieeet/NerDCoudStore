@@ -35,13 +35,7 @@ class Comuna(models.Model):
 
     def __str__(self):
         return self.comuna
-    
-class Rol(models.Model):
-    id_rol = models.AutoField(primary_key=True)
-    nombre_rol = models.CharField(max_length=200)
 
-    def __str__(self):
-        return self.nombre_rol
 class Usuario(models.Model):
     id_usuario = models.AutoField(primary_key=True)
     nombre_usuario = models.CharField(max_length=200)

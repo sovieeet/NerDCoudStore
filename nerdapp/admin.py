@@ -4,7 +4,6 @@ from nerdapp.models import *
 admin.site.register(Categoria)
 admin.site.register(Producto)
 admin.site.register(Usuario)
-admin.site.register(Rol)
 admin.site.register(Subasta)
 admin.site.register(Carrito)
 admin.site.register(Comuna)
