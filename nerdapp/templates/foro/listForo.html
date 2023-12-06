@@ -1,6 +1,6 @@
 {% extends 'nerdapp/base.html' %} {% block title %}Foro{% endblock title %}
 {%block contenido %} {% load humanize %} {% load static %}{% load crispy_forms_tags %}
-
+{% if user.is_authenticated %}
 <div style="
 	background-color: #6264eb21;
 	border: 1px solid #ddd;
@@ -10,16 +10,15 @@
 ">
 	<div class="row" style="padding: 2%; ">
 		<div class="col">
-			{% if user.is_authenticated %}
 			<button type="button" class="btn btn-secondary" style=" text-align: start;padding: 2% 10%; ">
 				<a href="{% url 'agregarForo' %}" style="text-decoration: none; color: white;">Crear Tema</a>
 			</button>
-			{% endif %}
 		</div>
 		<div class="col-6">
 		</div>
 	</div>
 </div>
+{% endif %}
 <h2 class="text-subtitulo" style="text-align: left">Foro público</h2>
 <div class="row"></div>
 <div class="row">
@@ -58,7 +57,7 @@
 
 				<div style="text-align: start; overflow-y:scroll;
         overflow-x:hidden; height:200px">
-
+					{% if user.is_authenticated %}
 					<small><small><i>Responder</i></small></small>
 					<form method="post" enctype="multipart/form-data">
 						{% load crispy_forms_tags %} {% csrf_token %}
@@ -81,6 +80,10 @@
 
 						</div>
 					</form>
+					{% else %}
+					<h3 class="subasta-title">Inicie sesion para participar</h3>
+
+					{% endif %}
 					<div class="row">
 						<div class="col"><small><small><i>Respuestas de Usuarios</i></small></small>
 						</div>

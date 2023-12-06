@@ -32,12 +32,15 @@
 
                     </div>
             </div>
+            {% if user.is_authenticated %}
             <div class="row" style="text-align: end;">
                 <div class="col-8">
                     <a href="{% url 'agregar_al_carrito' productos.id_producto %}">
                         <i class="bi bi-cart-plus fs-2" style="padding-left: 10px; color: #04668d"></i></a>
                 </div>
             </div>
+            {% endif %}
+
 
         </div>
 

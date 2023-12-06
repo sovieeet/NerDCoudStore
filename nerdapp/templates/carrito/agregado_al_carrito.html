@@ -1,10 +1,23 @@
-{% extends 'nerdapp/base.html' %} {% block title %}Index{% endblock title %}
+{% extends 'nerdapp/base.html' %} {% block title %}Carrito{% endblock title %}
 {%block contenido %} {% load humanize %} {% load static %}
+<div class="row">
+	<div class="col-12 col-md-6 offset-md-3">
+		<div class="card">
+			<div class="card-body mx-auto pt-4">
+				<h5 class="card-title">Producto Agregado al Carrito</h5>
+				<p class="card-text">
+					El producto <strong>{{foro}}</strong>se ha agregado exitosamente a tu carrito.<br />
+					<hr>
 
-<h2>Producto Agregado al Carrito</h2>
-<p>
-	El producto {{ producto.nombre }} se ha agregado exitosamente a tu carrito.
-</p>
-<a href="{% url 'ver_carrito' %}">Ir al Carrito</a>
+				<div style="text-align: center;">
+					<a href="{% url 'ver_carrito' %}">Ir al Carrito</a>
+					<a href="{% url 'index' %}">Home</a>
+				</div>
 
+				</p>
+			</div>
+		</div>
+		<br />
+	</div>
+</div>
 {% endblock %}
